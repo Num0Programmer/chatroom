@@ -7,7 +7,7 @@ int main() {
     int client_socket;                  // client side socket
     struct sockaddr_in client_address;  // client socket naming struct
     struct hostent *host_entry;         // host information struct
-    char msg[MSG_SIZE];
+    char msg[MSG_SIZE];                 // message buffer
     
     // resolve host name and store
     host_entry = gethostbyname(NIST_DNS);
@@ -38,10 +38,11 @@ int main() {
         perror("Error connecting to server!\n");
         exit(EXIT_FAILURE);
     }
-   
 
+    // store message from time.nist.gov
     read(client_socket, &msg, sizeof(char) * MSG_SIZE);
 
+    // print received message
     if (msg[0] != '\0')
     {
         int i = 0;
@@ -52,6 +53,7 @@ int main() {
         }
         printf("*\n");
     }
+    // assume nothing came
     else
     {
         printf("No message recieved!\n");
@@ -61,4 +63,3 @@ int main() {
 
     return EXIT_SUCCESS;
 }
-
