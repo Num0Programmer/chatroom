@@ -1,40 +1,29 @@
-/************************************************************************
- * libraries
- ************************************************************************/
-// should always be there ...
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <fcntl.h>
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
-
-// socket/bind/listen/accept
-#include <arpa/inet.h>
-#include <signal.h>
 #include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
-
-// read/write/close
-#include <sys/uio.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <syslog.h>
 
-/************************************************************************
- * function prototype declarations
- ************************************************************************/
-void handle_client(int client_socket);
+/* Function prototypes */
+void* handle_client(void* arg);
 
-/************************************************************************
- * preprocessor directives
- ************************************************************************/
-#define SERVER_ADDR "142.11.213.134" // loopback ip address
+/* Preprocessor directives */
+#define SERVER_ADDR "127.0.0.1" // loopback ip address
 #define PORT 23657              // port the server will listen on
-#define NIST_DNS "time.nist.gov" // NIST server domain name
-#define NIST_PORT 13 // port the NIST server listens on
+#define NIST_DNS "time.nist.gov"
+#define NIST_IP "129.6.15.28"
+#define NIST_PORT 13
+#define MSG_SIZE 100
 
-// I cannot let go of the old-fashioned way :) - for readability ...
-#define FALSE false
-#define TRUE !false
+#define FALSE 0
+#define TRUE !FALSE
 
-// number of pending connections in the connection queue
-#define NUM_CONNECTIONS 1
+#define NUM_CONNECTIONS 1       // number of pending connections in the connection queue
 
