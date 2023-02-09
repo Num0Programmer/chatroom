@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include <syslog.h>
+#include <time.h>
 
 /* Function prototypes */
 void* handle_client(void* arg);

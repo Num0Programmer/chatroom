@@ -9,6 +9,7 @@ int main() {
     struct hostent *host_entry;         // host information struct
     char msg[MSG_SIZE];                 // message buffer
     
+    host_entry = gethostbyname(NIST_IP);
     // create an unnamed socket, and then name it
     client_socket = socket(AF_INET, SOCK_STREAM, 0);
     // create addr struct
@@ -16,8 +17,6 @@ int main() {
     //inet_aton(host_entry->h_addr_list[0], &client_address.sin_addr);
     client_address.sin_addr.s_addr = inet_addr(SERVER_ADDR);
     client_address.sin_port = htons(PORT);
-
-    printf("Host type is AF_INET\n\n");
     
     // connect to server socket
     if (connect(client_socket, (struct sockaddr *)&client_address, sizeof(client_address)) == -1)
@@ -34,12 +33,11 @@ int main() {
     {
         
         int i = 0;
-        while (i < 30)
+        while (msg[i] != '\0')
         {
             printf("%c", msg[i]);
             i += 1;
         }
-        printf("*\n");
     }
     // assume nothing came
     else
