@@ -6,6 +6,7 @@ import java.net.Socket;
 
 interface Server_Info 
 {
+	String remote_addr = "142.11.214.8";
 	String server_addr = "time.nist.gov";
 	int port = 13;
 }
@@ -16,7 +17,7 @@ public class Client implements Server_Info
 	public static void main(String[] args) throws IOException 
 	{
 			String msg = "";
-			Socket client_socket = new Socket(server_addr, port);
+			Socket client_socket = new Socket(remote_addr, port);
 			InputStreamReader input = new InputStreamReader(client_socket.getInputStream());
 			BufferedReader buffer_reader = new BufferedReader(input);
 			
