@@ -9,6 +9,7 @@ int main() {
     struct hostent *host_entry;         // host information struct
     char msg[MSG_SIZE];                 // message buffer
     
+    host_entry = gethostbyname(NIST_IP);
     // create an unnamed socket, and then name it
     client_socket = socket(AF_INET, SOCK_STREAM, 0);
     // create addr struct
@@ -37,7 +38,6 @@ int main() {
             printf("%c", msg[i]);
             i += 1;
         }
-        printf("*\n");
     }
     // assume nothing came
     else

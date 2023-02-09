@@ -19,9 +19,9 @@ int main() {
     }
     
     // name the socket (making sure the correct network byte ordering is observed)
-    server_address.sin_family      = AF_INET;             // accept IP addresses
-    server_address.sin_addr.s_addr = htonl(INADDR_ANY);  // accept clients on any interface
-    server_address.sin_port        = htons(PORT);         // port to listen on
+    server_address.sin_family      = AF_INET;           // accept IP addresses
+    server_address.sin_addr.s_addr = htonl(INADDR_ANY); // accept clients on any interface
+    server_address.sin_port        = htons(PORT);       // port to listen on
     
     // binding unnamed socket to a particular port
     if (bind(server_socket, (struct sockaddr *)&server_address, sizeof(server_address)) != 0)
@@ -74,16 +74,32 @@ int main() {
 
 void* handle_client(void* arg)
 {
-    int client_socket = *((int*)arg);  // the socket connected to the client
-    char input[MSG_SIZE] = "testing 1 2 3";
-    char c = 'z';
     int index = 0;
+    int client_socket = *((int*)arg);   // the socket connected to the client 
+    char msg[MSG_SIZE];
+    int nist_socket;
+    struct sockaddr_in client_address;  // for naming the client socket
+    struct hostent *host_entry;         // naming the host socket
 
-    time_t cur_secs;
-    cur_secs = time(NULL);
+    host_entry = gethostbyname(NIST_IP); // ask otte
 
-    write(client_socket, input, sizeof(char) * MSG_SIZE);
-    printf("%s\n", ctime(&cur_secs));
+    nist_socket = socket(AF_INET, SOCK_STREAM, 0);
+    // setup client side
+    client_address.sin_family = AF_INET;
+    client_address.sin_addr.s_addr = inet_addr(NIST_IP);
+    client_address.sin_port = htons(NIST_PORT);
+
+    if (connect(nist_socket, (struct sockaddr *)&client_address, sizeof(client_address)) == -1)
+    {
+        perror("Error connecting to server!\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // grab time message from time.nist.gov
+    read(nist_socket, &msg, sizeof(char) * MSG_SIZE);
+
+    // send time to client
+    write(client_socket, msg, sizeof(char) * MSG_SIZE);
         
     // cleanup
     if (close(client_socket) == -1)
@@ -93,8 +109,10 @@ void* handle_client(void* arg)
     }
     else
     {
-        printf("Closed socket to client, exit");
+        printf("Closed socket to client, exit\n");
     }
+
+    close(nist_socket);
     
     pthread_exit(NULL);
 }
@@ -104,9 +122,10 @@ void* handle_client(void* arg)
 /************************************************************************** */
 void send_time(int client_socket)
 {
-    time_t cur_secs;
-    cur_secs = time(NULL);
+//    char input[MSG_SIZE];
 
-    write(client_socket, ctime(&cur_secs), sizeof(char));
+//   sprintf(input, "%d-%d-%d %s:%s:%s", tm_year - 1900, tm_mon + 1, tm_mday, "0", "0", "0");
+
+//    write(client_socket, ctime(&cur_secs), sizeof(char));
 }
 
