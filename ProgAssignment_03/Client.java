@@ -22,6 +22,7 @@ public class Client implements Server_Info
 		OutputStreamWriter output = null;
 		BufferedReader buffer_reader = null;
 		BufferedWriter buffer_writer = null;
+		boolean steps_received = false;
 
 		try
 		{
@@ -29,9 +30,7 @@ public class Client implements Server_Info
 			input = new InputStreamReader(client_socket.getInputStream());
 			output = new OutputStreamWriter(client_socket.getOutputStream());
 			buffer_reader = new BufferedReader(input);
-			buffer_writer = new BufferedWriter(output);
 			BufferedOutputStream outStream = new BufferedOutputStream(client_socket.getOutputStream());
-			//byte[] test = "tesing 123\n".getBytes(); // REMOVE?
                         String rec_str;
                         int rec_as_num = 0;
 
@@ -44,19 +43,21 @@ public class Client implements Server_Info
 
 				outStream.write(msgToSend.getBytes());
 				outStream.flush();
-                                
-                                // convert rec to an integer
-                                rec_str = buffer_reader.readLine();
-                                for (int i = 0; i < rec_str.length(); i += 1)
-                                {
-                                    rec_as_num = (int)rec_str.charAt(i);
-                                }
+					
+					// convert rec to an integer
+					rec_str = buffer_reader.readLine();
+					for (int i = 0; i < rec_str.length(); i += 1)
+					{
+						System.out.println("this: " + rec_str);
+						rec_as_num = (int)rec_str.charAt(i);
+					}
+
+				steps_received = true;
                                 
 				System.out.print("Server: ");
                                 System.out.println(rec_as_num);
 
-				if (msgToSend.equalsIgnoreCase( "BYE"))
-					break;
+				
 			}
 
 		} catch(IOException e){
@@ -65,6 +66,7 @@ public class Client implements Server_Info
 			try {
 				if (client_socket != null)
 				client_socket.close();
+				System.out.println("connecton ended");
 
 				if (input != null)
 				input.close();
@@ -72,8 +74,6 @@ public class Client implements Server_Info
 				if (output != null)
 				output.close();
 
-				if (buffer_writer != null)
-				buffer_writer.close();
 
 				if (buffer_reader != null)
 				buffer_reader.close();
