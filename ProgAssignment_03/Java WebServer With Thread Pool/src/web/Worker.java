@@ -32,7 +32,7 @@ class Worker extends Thread implements HttpConstants {
     }
 
     public synchronized void run() {
-        System.out.println("in run");
+        // System.out.println("in run"); // REMOVE
         webServer.workerHasStarted();
 
         while (true) {
@@ -81,8 +81,10 @@ class Worker extends Thread implements HttpConstants {
          * before we fail with java.io.InterruptedIOException,
          * at which point we will abandon the connection.
          */
+        /*
         socket.setSoTimeout(webServer.timeout);
         socket.setTcpNoDelay(true);
+        */
         
         /* zero out the buffer from last time */
         for (int i = 0; i < BUF_SIZE; i++) {
@@ -124,7 +126,9 @@ class Worker extends Thread implements HttpConstants {
             
             // convert byte array to string for ease of use
                 // method: byteToString(buffer)
-            str_int = byteToString(buffer);
+            str_int = (String)(byteToString(buffer)).trim();
+            System.out.println("Bytes as String:");
+            System.out.println(str_int);
                         
             // verify string is int
                 // method: isValidInt(str_int)
@@ -133,16 +137,18 @@ class Worker extends Thread implements HttpConstants {
             // check if string is a valid int
             if(valid_int)
             {
-                System.out.println("HEEEEEY");
+                System.out.println("String was an integer!");
                 // convert stringToInt, save result in int_num 
                     // method: stringToInt(String str_int)
                 int_num = stringToInt(str_int);
+                System.out.println("String as integer:");
+                System.out.println(int_num);
             
                 // call collatz conjecture return number of steps it took to get 1
                     // method: collatzSteps(int_num)
                 int_steps = collatzSteps(int_num);
                     
-                // convert int to bytes. 
+                // convert int to bytes.
                 /* NOTICE not sure if we can just return a byte array from 
                 intToBytes to byte_steps... Java may handle it but we may 
                 have to manually copy the array. */
@@ -151,7 +157,8 @@ class Worker extends Thread implements HttpConstants {
                 
                 // send client message about steps
                     // method: sendClientStepMsg(byte_steps)
-                sendClientStepMsg(byte_steps);
+                //sendClientStepMsg(int_steps.byteValue());
+                ps.write(Integer.valueOf(int_steps).byteValue());
 
             }
             // otherwise string is not valid
@@ -159,6 +166,7 @@ class Worker extends Thread implements HttpConstants {
             {
                 // send client message that the string isnt a int
                     // sendClientErrMsg()
+                System.out.println("String was not an integer");
                 sendClientErrMsg();
                 ps.print("an error has occured");
                 
@@ -171,7 +179,7 @@ class Worker extends Thread implements HttpConstants {
             socket.close();
         }
     }
-/*
+/* // REMOVE?
     boolean printHeaders(File targ, PrintStream ps) throws IOException {
         System.out.println("in print headers");
 
@@ -316,14 +324,15 @@ class Worker extends Thread implements HttpConstants {
     */
     public String byteToString(byte[] buffer)
     {
-        // initialize variables
-                
-        // convert buffer array to string
-        String str = new String(buffer, StandardCharsets.UTF_8);
-  
+        String s = "";
+        
+        for (int i = 0; i < buffer.length; i += 1)
+        {
+            s += (char)buffer[i];
+        }
         
         // return string version of buffer array
-        return str;
+        return s;
     }
     
     /*
@@ -343,16 +352,23 @@ class Worker extends Thread implements HttpConstants {
         int steps = 0;
         
         // loop while number is not 1
-        
+        while (int_num != 1)
+        {
             // check if int_num is odd
-            
+            if (int_num % 2 != 0)
+            {
                 // set int_num equal to (3 * int_num) + 1
-            
+                int_num = (3 * int_num) + 1;
+            }
             // otherwise it's even
-            
+            else
+            {
                 // set int_num equal to int_num/2
-                
+                int_num /= 2;
+            }   
             // increment steps 
+            steps += 1;
+        }
         
         // return steps
         return steps;
@@ -378,16 +394,7 @@ class Worker extends Thread implements HttpConstants {
             // fill each index with the needed data
         
         // return bytes
-        
-        byte[] result = new byte[4];
-
-        result[0] = (byte) (int_steps >> 24);
-        result[1] = (byte) (int_steps >> 16);
-        result[2] = (byte) (int_steps >> 8);
-        result[3] = (byte) (int_steps /*>> 0*/);
-
-    return result;
-        
+        return new byte[1];
     }
     
     /*
@@ -399,18 +406,18 @@ class Worker extends Thread implements HttpConstants {
     */
     public boolean isValidInt(String str_int)
     {
-        // initialize variables
-        
         // loop through string
-        
-            // store isDigit result into bool var
-        
+        for (int i = 0; i < str_int.length(); i += 1)
+        {
             // check if current character is a digit
                 // method isDigit()
-
-            // otherwise curernt char isn't a digit
-        
-                // return false
+            if (('A' <= str_int.charAt(i) && str_int.charAt(i) <= 'Z')
+                || ('a' <= str_int.charAt(i) && str_int.charAt(i) <= 'z')
+                )
+            {
+                return false;
+            }
+        }
         
         // return true since we have looped through the whole string without 
         // hitting a non number char
@@ -430,9 +437,7 @@ class Worker extends Thread implements HttpConstants {
         // initialize variables
 
         
-        // print that the client fucked up
-
-        
+        // print that the client fucked up        
     }
 
     /*
@@ -445,7 +450,6 @@ class Worker extends Thread implements HttpConstants {
     public void sendClientStepMsg(byte[] byte_steps)
     {
         // initialize variables
-        
     }
     
     /*
@@ -459,8 +463,16 @@ class Worker extends Thread implements HttpConstants {
     public int stringToInt(String str_int)
     {
         // initialize variables
+        int number = 0;
+        int base = 1;
+        
+        for (int i = str_int.length() - 1; i >= 0; i -= 1)
+        {
+            number += (str_int.charAt(i) - '0') * base;
+            base *= 10;
+        }
                 
         // stub return
-        return 0;
+        return number;
     }
 }

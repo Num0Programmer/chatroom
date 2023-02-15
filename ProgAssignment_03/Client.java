@@ -31,7 +31,9 @@ public class Client implements Server_Info
 			buffer_reader = new BufferedReader(input);
 			buffer_writer = new BufferedWriter(output);
 			BufferedOutputStream outStream = new BufferedOutputStream(client_socket.getOutputStream());
-			byte[] test = "tesing 123\n".getBytes();
+			//byte[] test = "tesing 123\n".getBytes(); // REMOVE?
+                        String rec_str;
+                        int rec_as_num = 0;
 
 			Scanner scanner = new Scanner(System.in);
 
@@ -42,8 +44,16 @@ public class Client implements Server_Info
 
 				outStream.write(msgToSend.getBytes());
 				outStream.flush();
-
-				System.out.println("Server: " + buffer_reader.readLine());
+                                
+                                // convert rec to an integer
+                                rec_str = buffer_reader.readLine();
+                                for (int i = 0; i < rec_str.length(); i += 1)
+                                {
+                                    rec_as_num = (int)rec_str.charAt(i);
+                                }
+                                
+				System.out.print("Server: ");
+                                System.out.println(rec_as_num);
 
 				if (msgToSend.equalsIgnoreCase( "BYE"))
 					break;
