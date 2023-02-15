@@ -107,21 +107,6 @@ class Worker extends Thread implements HttpConstants {
                     /* EOF */
                     return;
                 }
-                int i = nread;
-                nread += r;
-
-                for (; i < nread; i++) {
-
-                    try{
-                        
-                        System.out.println(buffer[i]);
-                        
-                        } catch (NumberFormatException e) {
-                            
-                        
-                        }
-
-                }
         // DR.OTTES CODE END
             
             // convert byte array to string for ease of use
@@ -179,6 +164,8 @@ class Worker extends Thread implements HttpConstants {
             socket.close();
         }
     }
+
+
     
     /*
     desc: should be able to convert a byte array into a string array. Will have to 

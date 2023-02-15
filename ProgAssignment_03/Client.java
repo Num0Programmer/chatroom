@@ -21,8 +21,6 @@ public class Client implements Server_Info
 		InputStreamReader input = null;
 		OutputStreamWriter output = null;
 		BufferedReader buffer_reader = null;
-		BufferedWriter buffer_writer = null;
-		boolean steps_received = false;
 
 		try
 		{
@@ -31,34 +29,31 @@ public class Client implements Server_Info
 			output = new OutputStreamWriter(client_socket.getOutputStream());
 			buffer_reader = new BufferedReader(input);
 			BufferedOutputStream outStream = new BufferedOutputStream(client_socket.getOutputStream());
-                        String rec_str;
-                        int rec_as_num = 0;
+
+			String rec_str;
+			int rec_as_num = 0;
 
 			Scanner scanner = new Scanner(System.in);
 
-			while (true) 
+
+			String msgToSend = scanner.nextLine();
+
+
+			outStream.write(msgToSend.getBytes());
+			outStream.flush();
+				
+			// convert rec to an integer
+			rec_str = buffer_reader.readLine();
+			for (int i = 0; i < rec_str.length(); i += 1)
 			{
-				String msgToSend = scanner.nextLine();
-
-
-				outStream.write(msgToSend.getBytes());
-				outStream.flush();
-					
-					// convert rec to an integer
-					rec_str = buffer_reader.readLine();
-					for (int i = 0; i < rec_str.length(); i += 1)
-					{
-						System.out.println("this: " + rec_str);
-						rec_as_num = (int)rec_str.charAt(i);
-					}
-
-				steps_received = true;
-                                
-				System.out.print("Server: ");
-                                System.out.println(rec_as_num);
+				rec_as_num = (int)rec_str.charAt(i);
+			}
+							
+			System.out.print("Server: steps is ");
+							System.out.println(rec_as_num);
 
 				
-			}
+			
 
 		} catch(IOException e){
 			e.printStackTrace();
