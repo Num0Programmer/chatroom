@@ -68,6 +68,7 @@ int main(int argc, char** argv) {
 void* handle_client(void* arg) { // xxxxx
     int client_socket = *((int*)arg);   // the socket connected to the client
     int input;
+    int collatz_num;
     int keep_going = TRUE;
     
     while (keep_going) {
@@ -88,9 +89,12 @@ void* handle_client(void* arg) { // xxxxx
         if (input == 'q') {
             keep_going = FALSE;
         }
-        input = 69;
+
+
+        collatz_num = collatz_conj(input);
+
         // send result back to client
-        write(client_socket, &input, sizeof(int));
+        write(client_socket, &collatz_num, sizeof(int));
     }
     
     // cleanup
@@ -104,3 +108,30 @@ void* handle_client(void* arg) { // xxxxx
     pthread_exit(NULL);
 }
 
+int collatz_conj(int num)
+{
+        // initialize variables
+        int steps = 0;
+        
+        // loop while number is not 1
+        while (num != 1)
+        {
+            // check if int_num is odd
+            if (num % 2 != 0)
+            {
+                // set int_num equal to (3 * int_num) + 1
+                num = (3 * num) + 1;
+            }
+            // otherwise it's even
+            else
+            {
+                // set int_num equal to int_num/2
+                num /= 2;
+            }   
+            // increment steps 
+            steps += 1;
+        }
+        
+        // return steps
+        return steps;
+}
