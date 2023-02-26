@@ -17,6 +17,7 @@
 void* handle_client(void* arg);
 int collatz_conj(int num);
 
+
 /* Preprocessor directives */
 #define SERVER_ADDR "127.0.0.1" // loopback ip address
 #define PORT 23657              // port the server will listen on

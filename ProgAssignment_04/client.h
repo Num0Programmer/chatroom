@@ -14,6 +14,9 @@
 #include <syslog.h>
 #include <time.h>
 
+/* Function prototypes */
+void* talk_to_server(void *number_ptr);
+
 /* Preprocessor directives */
 #define HOME_ADDR "127.0.0.1"   // loopback ip address
 #define HOME_PORT 23657
