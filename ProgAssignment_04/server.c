@@ -67,12 +67,12 @@ int main(int argc, char** argv) {
 
 void* handle_client(void* arg) { // xxxxx
     int client_socket = *((int*)arg);   // the socket connected to the client
-    char input;
+    int input;
     int keep_going = TRUE;
     
     while (keep_going) {
         // read char from client
-        switch (read(client_socket, &input, sizeof(char))) {
+        switch (read(client_socket, &input, sizeof(int))) {
             case 0:
                 keep_going = FALSE;
                 perror("End of stream, returning ...\n");
@@ -82,15 +82,15 @@ void* handle_client(void* arg) { // xxxxx
                 keep_going = FALSE;
                 break;
         }
-        printf("%c", input);
+        printf("%d", input);
         
         // check if we terminate
         if (input == 'q') {
             keep_going = FALSE;
         }
-        
+        input = 69;
         // send result back to client
-        write(client_socket, &input, sizeof(char));
+        write(client_socket, &input, sizeof(int));
     }
     
     // cleanup
