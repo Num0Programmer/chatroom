@@ -7,7 +7,6 @@ int main()
     struct sockaddr_in client_addr;
 
     // data
-    //char msg[DEFAULT_BUF_SIZE];
     int input;
     int rec;
 
@@ -26,9 +25,11 @@ int main()
     scanf("%d", &input);
     printf("\n");
 
+    input = htonl(input);
     write(sock, &input, sizeof(int));
 
     read(sock, &rec, sizeof(int));
+    rec = ntohl(rec);
     printf("Number of iterations: %d\n", rec);
 
     close(sock);

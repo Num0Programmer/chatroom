@@ -78,11 +78,13 @@ void* handle_client(void* arg)
 
     // read number from client
     read(client_socket, &input, sizeof(int));
+    input = ntohl(input);
     printf("Received: %d\n", input);
 
     // send steps back to client
+    input = htonl(input);
     write(client_socket, &input, sizeof(int));
-    printf("Sent: %d\n", input);
+    printf("Sent: %d\n", ntohl(input));
     
     // cleanup
     if (close(client_socket) == -1)
