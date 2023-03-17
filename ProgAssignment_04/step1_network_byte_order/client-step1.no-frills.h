@@ -16,7 +16,6 @@
 
 /* Preprocessor directives */
 #define HOME_ADDR "127.0.0.1"   // loopback ip address
-#define HOME_PORT 23657
 #define SERVER_ADDR "0.0.0.0"   // ip address of server
 #define PORT 23657              // port the server will listen on
 #define DEFAULT_BUF_SIZE 64     // default size to set char arrays to

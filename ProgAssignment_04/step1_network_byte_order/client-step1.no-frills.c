@@ -14,7 +14,7 @@ int main()
     sock = socket(AF_INET, SOCK_STREAM, 0);
     client_addr.sin_family = AF_INET;
     client_addr.sin_addr.s_addr = inet_addr(HOME_ADDR);
-    client_addr.sin_port = htons(HOME_PORT);
+    client_addr.sin_port = htons(PORT);
 
     if (connect(sock, (struct sockaddr *)&client_addr, sizeof(client_addr)) == -1)
     {
@@ -27,18 +27,8 @@ int main()
     printf("\n");
 
     write(sock, &input, sizeof(int));
+
     read(sock, &rec, sizeof(int));
-
-    /*
-    size_t i = 0;
-    while (msg[i] != '\0')
-    {
-        printf("%c", msg[i]);
-        i += 1;
-    }
-    printf("\n");
-    */
-
     printf("Number of iterations: %d\n", rec);
 
     close(sock);
