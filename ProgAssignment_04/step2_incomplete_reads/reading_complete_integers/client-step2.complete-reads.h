@@ -15,6 +15,7 @@
 #include <time.h>
 
 /* function prototypes */
+int read_int(int socket, int* int_value_ptr);
 void* talk_to_server();
 
 /* Preprocessor directives */

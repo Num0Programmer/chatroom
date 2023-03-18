@@ -13,6 +13,7 @@
 
 /* Function prototypes */
 void* handle_client(void* arg);
+int read_int(int socket, int* int_value_ptr);
 
 /* Preprocessor directives */
 #define SERVER_ADDR "127.0.0.1" // loopback ip address

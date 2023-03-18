@@ -78,7 +78,7 @@ void* handle_client(void* arg)
     int send = 16;
 
     // read number from client
-    read(client_socket, &rec, sizeof(int));
+    read_int(client_socket, &rec);
     rec = ntohl(rec);
     printf("Received: %d\n", rec);
 
@@ -101,3 +101,25 @@ void* handle_client(void* arg)
     pthread_exit(NULL);
 }
 
+int read_int(int socket, int* int_value_ptr)
+{
+    int bytes_read;
+
+    for (int bytes_left = 4; bytes_left > 0; bytes_left -= bytes_read)
+    {
+        bytes_read = read(socket, int_value_ptr, sizeof(int));
+
+        if (bytes_read == 4)
+        {
+            break;  // all bytes read in one go
+        }
+        else if (bytes_read == -1)
+        {
+            break;  // problem in network
+        }
+
+        *int_value_ptr <<= (bytes_left - bytes_read) * 8;
+    }
+
+    return 4;
+}

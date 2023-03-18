@@ -17,6 +17,29 @@ int main()
     return EXIT_SUCCESS;
 }
 
+int read_int(int socket, int* int_value_ptr)
+{
+    int bytes_read;
+
+    for (int bytes_left = 4; bytes_left > 0; bytes_left -= bytes_read)
+    {
+        bytes_read = read(socket, int_value_ptr, sizeof(int));
+
+        if (bytes_read == 4)
+        {
+            break;  // all bytes read in one go
+        }
+        else if (bytes_read == -1)
+        {
+            break;  // problem in network
+        }
+
+        *int_value_ptr <<= (bytes_left - bytes_read) * 8;
+    }
+
+    return 4;
+}
+
 void* talk_to_server()
 {
     // data
@@ -43,7 +66,7 @@ void* talk_to_server()
     send = htonl(send);
     write(sock, &send, sizeof(int));
 
-    bytes_read = read(sock, &rec, sizeof(int));
+    bytes_read = read_int(sock, &rec);
     rec = ntohl(rec);
     printf("Number of iterations: %d\n", rec);
     if (bytes_read < 4)
