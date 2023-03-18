@@ -1,6 +1,6 @@
 #include "server-step2.complete-reads.h"
 
-pthread_mutex_t* mutex;
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 /* ************************************************************************* */
 /* MAIN                                                                      */
@@ -13,10 +13,6 @@ int main(int argc, char** argv)
 
     // sent when client disconnected
     signal(SIGPIPE, SIG_IGN);
-
-    // initialize mutex lock
-    mutex = (pthread_mutex_t*)malloc(sizeof(pthread_mutex_t));
-    pthread_mutex_init(mutex, NULL);
     
     // create unnamed network socket for server to listen on
     if ((server_socket = socket(AF_INET, SOCK_STREAM, 0)) == -1)
@@ -47,6 +43,7 @@ int main(int argc, char** argv)
     // server loop
     while (TRUE)
     {
+        pthread_mutex_lock(&mutex);
         
         // accept connection to client
         int client_socket = accept(server_socket, NULL, NULL);
@@ -61,8 +58,6 @@ int main(int argc, char** argv)
             perror("Error creating thread");
             exit(EXIT_FAILURE);
         }
-
-        pthread_mutex_lock(mutex);
         
         // detach the thread so that we don't have to wait (join) with it to reclaim memory.
         // memory will be reclaimed when the thread finishes.
@@ -82,11 +77,10 @@ int main(int argc, char** argv)
 void* handle_client(void* arg)
 {
     int client_socket = *((int*)arg);   // the socket connected to the client
-
-    pthread_mutex_unlock(mutex);
-
     int rec;
     int send = 16;
+
+    pthread_mutex_unlock(&mutex);
 
     // read number from client
     read_int(client_socket, &rec);
