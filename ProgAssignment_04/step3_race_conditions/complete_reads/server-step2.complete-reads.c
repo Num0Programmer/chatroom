@@ -1,6 +1,6 @@
 #include "server-step2.complete-reads.h"
 
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mutex;
 
 /* ************************************************************************* */
 /* MAIN                                                                      */
@@ -10,6 +10,8 @@ int main(int argc, char** argv)
 {
     int server_socket;                 // descriptor of server socket
     struct sockaddr_in server_address; // for naming the server's listening socket
+
+    pthread_mutex_init(&mutex, NULL);
 
     // sent when client disconnected
     signal(SIGPIPE, SIG_IGN);
@@ -44,7 +46,7 @@ int main(int argc, char** argv)
     while (TRUE)
     {
         pthread_mutex_lock(&mutex);
-        
+
         // accept connection to client
         int client_socket = accept(server_socket, NULL, NULL);
         printf("\nServer with PID %d: accepted client\n", getpid());
@@ -67,6 +69,8 @@ int main(int argc, char** argv)
             exit(EXIT_FAILURE);
         }
     }
+
+    pthread_mutex_destroy(&mutex);
 }
 
 
@@ -128,3 +132,4 @@ int read_int(int socket, int* int_value_ptr)
 
     return 4;
 }
+

@@ -1,23 +1,50 @@
 #include "client-step3.complete-reads.h"
 
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mutex;
 
 int main()
 {
+    pthread_mutex_init(&mutex, NULL);
+
+    pthread_mutex_lock(&mutex);
     for (size_t task_counter = 1; task_counter <= NUM_CONNECTIONS; task_counter += 1)
     {
-        pthread_mutex_lock(&mutex);
-        
         pthread_t thread; 
         if (pthread_create(&thread, NULL, talk_to_server, (void*)&task_counter) != 0)
         {
             perror("Error: failed to create thread");
             exit(EXIT_FAILURE);
         }
+        pthread_mutex_lock(&mutex);
     }
     sleep(5);
 
+    pthread_mutex_destroy(&mutex);
+
     return EXIT_SUCCESS;
+}
+
+int read_int(int socket, int* int_value_ptr)
+{
+    int bytes_read;
+
+    for (int bytes_left = 4; bytes_left > 0; bytes_left -= bytes_read)
+    {
+        bytes_read = read(socket, int_value_ptr, sizeof(int));
+
+        if (bytes_read == 4)
+        {
+            break;  // all bytes read in one go
+        }
+        else if (bytes_read == -1)
+        {
+            break;  // problem in network
+        }
+
+        *int_value_ptr <<= (bytes_left - bytes_read) * 8;
+    }
+
+    return 4;
 }
 
 void* talk_to_server(void* _send)
@@ -48,7 +75,7 @@ void* talk_to_server(void* _send)
     send = htonl(send);
     write(sock, &send, sizeof(int));
 
-    bytes_read = read(sock, &rec, sizeof(int));
+    bytes_read = read_int(sock, &rec);
     rec = ntohl(rec);
     printf("Number of iterations: %d\n", rec);
     if (bytes_read < 4)
@@ -60,3 +87,4 @@ void* talk_to_server(void* _send)
     close(sock);
     pthread_exit(NULL);
 }
+
