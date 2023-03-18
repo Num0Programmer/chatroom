@@ -2,7 +2,7 @@
 
 int main()
 {
-    for (size_t task_counter = 0; task_counter < NUM_CONNECTIONS; task_counter += 1)
+    for (size_t task_counter = 1; task_counter <= NUM_CONNECTIONS; task_counter += 1)
     {
         pthread_t thread;
 
