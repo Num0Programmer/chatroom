@@ -10,24 +10,21 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <signal.h>
+#include <string.h>
 #include <syslog.h>
 #include <time.h>
 
-/* Function prototypes */
-void* handle_client(void* arg);
-int collatz_conj(int num);
-
+/* function prototypes */
+void* talk_to_server(void* _send);
 
 /* Preprocessor directives */
-#define SERVER_ADDR "127.0.0.1" // loopback ip address
+#define HOME_ADDR "127.0.0.1"   // loopback ip address
+#define SERVER_ADDR "142.11.213.134"   // ip address of server
 #define PORT 23657              // port the server will listen on
-#define NIST_DNS "time.nist.gov"
-#define NIST_IP "129.6.15.28"
-#define NIST_PORT 13
-#define MSG_SIZE 100
+#define DEFAULT_BUF_SIZE 64     // default size to set char arrays to
 
 #define FALSE 0
 #define TRUE !FALSE
 
-#define NUM_CONNECTIONS 1       // number of pending connections in the connection queue
+#define NUM_CONNECTIONS 20       // number of pending connections in the connection queue
 
