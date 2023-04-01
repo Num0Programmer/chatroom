@@ -1,6 +1,9 @@
 #include "main.h"
 
+
+/* global variables */
 pthread_mutex_t mutex;
+
 
 int main (int argc, char** argv)
 {
@@ -73,6 +76,9 @@ int main (int argc, char** argv)
 
 	pthread_mutex_destroy(&mutex);
 
-	return 0;
+	return EXIT_SUCCESS;
 }
+
+
+/* function implementation */
 

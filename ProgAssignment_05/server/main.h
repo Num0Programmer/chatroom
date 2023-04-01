@@ -12,11 +12,14 @@
 #include <unistd.h>
 #include "client_handler.h"
 
+
 /* structures */
+
 
 /* function prototypes */
 
-/* preprocessor definitiona */
+
+/* preprocessor definitions */
 #define SERVER_ADDR "127.0.0.1"
 #define PORT 23657
 
