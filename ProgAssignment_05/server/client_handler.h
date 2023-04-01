@@ -1,3 +1,6 @@
+#include <pthread.h>
+#include <stdio.h>
+
 /* structures */
 
 /* function prototypes */

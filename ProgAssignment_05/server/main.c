@@ -1,13 +1,13 @@
 #include "main.h"
 
+pthread_mutex_t mutex;
+
 int main (int argc, char** argv)
 {
-	printf("Server started:\n");
-	printf("IP Address: %s\n", SERVER_ADDR);
-	printf("Port number: %d\n", PORT);
-
 	int server_socket;					// descriptor of server socket
 	struct sockaddr_in server_address;	// naming the server's listening socket
+	
+	pthread_mutex_init(&mutex, NULL);
 
 	signal(SIGPIPE, SIG_IGN);	// sent when client disconnected
 
@@ -41,9 +41,16 @@ int main (int argc, char** argv)
 		exit(EXIT_FAILURE);
 	}
 
+	// indicate server is about to enter server loop
+	printf("Server started:\n");
+	printf("IP Address: %s\n", SERVER_ADDR);
+	printf("Port number: %d\n", PORT);
+
 	// server loop
 	while (TRUE)
 	{
+		pthread_mutex_lock(&mutex);
+
 		// accept client
 		int client_socket = accept(server_socket, NULL, NULL);
 		printf("\nServer with PID %d: accepted client\n", getpid());
@@ -63,6 +70,8 @@ int main (int argc, char** argv)
 			exit(EXIT_FAILURE);
 		}
 	}
+
+	pthread_mutex_destroy(&mutex);
 
 	return 0;
 }
