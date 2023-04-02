@@ -14,6 +14,8 @@
 #include <time.h>
 #include <unistd.h>
 
+#include "../chat_node.h"
+#include "../message.h"
 #include "receiver_handler.h"
 #include "sender_handler.h"
 
