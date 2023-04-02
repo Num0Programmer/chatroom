@@ -26,5 +26,5 @@
 #define FALSE 0
 #define TRUE !FALSE
 
-#define NUM_CONNECTIONS 5
+#define NUM_CONNECTIONS 20
 

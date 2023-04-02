@@ -2,20 +2,42 @@
 
 
 /* global variables */
-pthread_mutex_t mutex;
 
 
 int main(int argc, char** argv)
 {
-	pthread_mutex_init(&mutex, NULL);
+	// define threading information
+	// define networking information
 
-	pthread_t thread;
-	if (pthread_create(&thread, NULL, receiver_handler, NULL) != 0)
+	// capture command line input
+	
+	// check input length is greater than "JOIN"
 	{
-		perror("Error creating thread");
-		exit(EXIT_FAILURE);
+		// initialize networking information with custom information
+	}
+	// otherwise, assume default configuration information
+	{
+		// initialize networking information with default information
+	}
+		
+	// start sender - pass networking information
+	// start receiver thread - pass networking information
+
+	// while chatting code is not equal to SHUTDOWN
+	{
+		// capture input from command line
+
+		// start sender thread - hand port number
+
+		// check join with sender thread
+		{
+			// report errors
+		}
 	}
 
 	return EXIT_SUCCESS;
 }
+
+
+/* function implementation */
 

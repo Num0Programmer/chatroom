@@ -11,6 +11,8 @@
 
 /* function prototypes */
 void* receiver_handler(void* _);
+void* handle_conn(void* _sock);
+int read_complete(int _sock, int* int_value_ptr, size_t size);
 
 
 /* preprocessor definitions */
