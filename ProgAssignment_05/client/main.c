@@ -5,7 +5,7 @@
 pthread_mutex_t mutex;
 
 
-int main()
+int main(int argc, char** argv)
 {
 	pthread_mutex_init(&mutex, NULL);
 

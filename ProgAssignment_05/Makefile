@@ -1,33 +1,32 @@
-# executables
-SERVER_EXEC := chat_server
-CLIENT_EXEC := chat_client
-
-# source directories
-SERVER_DIR := ./server
-CLIENT_DIR := ./client
-
-# source files
-SERVER_SRC := $(shell find $(SERVER_DIR) -name "*.c")
-CLIENT_SRC := $(shell find $(CLIENT_DIR) -name "*.c")
-
 # variables
-DEBUG := -g
-CFLAGS := -Wall -std=c99 -pedantic -c $(DEBUG)
-LFLAGS := -Wall -std=c99 -pedantic $(DEBUG)
-LDFLAGS := -pthread -lpthread
+DEBUG = -g
+CFLAGS = -Wall -std=c99 -pedantic -c $(DEBUG)
+LFLAGS = -Wall -std=c99 -pedantic $(DEBUG)
+LDFLAGS = -lpthread
 
 # remove all
-RM_ALL := rm -rf ./*.o $(SERVER_DIR)/*.o $(CLIENT_DIR)/*.o $(SERVER_EXEC) $(CLIENT_EXEC)
+RM_ALL := rm -rf ./*.o ./server/*.o ./client/*.o chat_server chat_client
 
-all: $(SERVER_DIR)/%.o $(CLIENT_DIR)/%.o
-	$(CC) $(LFLAGS) $(SERVER_SRC)/%.o -o $(SERVER_EXEC) $(LDFLAGS)
-	$(CC) $(LFLAGS) $(CLIENT_SRC)/%.o -o $(CLIENT_EXEC) $(LDFLAGS)
+server: ./server/client_handler.o ./server/main.o
+	$(CC) $(LFLAGS) ./server/client_handler.o ./server/main.o -o chat_server $(LDFLAGS)
 
-$(SERVER_SRC)/%.o: %.c %.h
-	$(CC) $(CFLAGS) $(SERVER_SRC)/$(SRCS)
+client_handler.o: ./server/client_handler.c ./server/client_handler.h
+	$(CC) $(CFLAGS) ./server/client_handler.c
 
-$(CLIENT_SRC)/%.o: %.c %.h
-	$(CC) $(CFLAGS) $(CLIENT_SRC)/$(SRCS)
+main.o: ./server/main.c ./server/main.h
+	$(CC) $(CFLAGS) ./server/main.c
+
+client: ./client/receiver_handler.o ./client/sender_handler.o ./client/main.o
+	$(CC) $(LFLAGS) ./client/receiver_handler.o ./client/sender_handler.o ./client/main.o -o chat_client $(LDFLAGS)
+
+receiver_handler.o: ./client/receiver_handler.c ./client/receiver_handler.h
+	$(CC) $(CFLAGS) ./client/receiver_handler.c
+
+sender_handler.o: ./client/sender_handler.c ./client/sender_handler.h
+	$(CC) $(CFLAGS) ./client/sender_handler.c
+
+main.o:	./client/main.c ./client/main.h
+	$(CC) $(CFLAGS) ./client/main.c
 
 clean:
 	$(RM_ALL)

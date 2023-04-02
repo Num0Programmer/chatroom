@@ -10,7 +10,7 @@
 
 
 /* function prototypes */
-void* receiver_handler();
+void* receiver_handler(void* _);
 
 
 /* preprocessor definitions */
