@@ -1,19 +1,22 @@
 #include <stdlib.h>
 
-#include "message.h"
-
 
 #ifndef CHAT_NODE_H
 #define CHAT_NODE_H
 
 
 /* structures */
-struct message
+struct chat_node
 {
-	uint8_t type;
 	size_t ip_addr;
 	int port;
-	struct note* n;
+	struct chat_node* node;
+};
+
+struct chat_node_list
+{
+	size_t size;
+	struct chat_node* head;
 };
 
 
@@ -29,7 +32,10 @@ enum types
 
 
 /* function prototypes */
-void message_init(struct message* msg);
+void add_chat_node(struct chat_node_list* _list, struct chat_node* _node);
+void chat_node_init(struct chat_node* _node, size_t _ip_addr, int _port);
+void chat_node_list_init(struct chat_node_list* _list);
+void remove_chat_node(struct chat_node_list* _list, size_t _ip_addr);
 
 
 /* preprocessor definitions */

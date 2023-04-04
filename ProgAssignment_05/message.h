@@ -6,6 +6,14 @@
 
 
 /* structures */
+struct message
+{
+	uint8_t type;
+	size_t ip_addr;
+	int port;
+	struct note* note;
+};
+
 struct note
 {
 	char usernamen[16];
@@ -15,7 +23,8 @@ struct note
 
 
 /* function prototypes */
-void note_init(struct note* n);
+void message_init(struct message* _message, uint8_t _type, size_t _ip_addr, int _port, struct note* _node);
+void note_init(struct note* _note, char* _username, char* _sentence, uint8_t _len);
 
 
 /* preprocessor definitions */
