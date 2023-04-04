@@ -3,7 +3,9 @@ CFLAGS = -Wall -std=c99 -pedantic -c -g
 LDFLAGS = -lpthread
 
 # remove all
-RM_ALL := rm -rf ./*.o ./server/*.o ./client/*.o chat_server chat_client
+RM_ALL := rm -rf ./.DS_Store *.dSYM ./*.o ./server/*.o ./client/*.o chat_server chat_client
+
+all: server client
 
 server: ./server/client_handler.o ./server/main.c ./chat_node.o ./message.o ./server/main.h
 	$(CC) ./server/client_handler.o ./server/main.c -o chat_server $(LDFLAGS)
