@@ -9,16 +9,26 @@ void add_chat_node(struct chat_node_list* _list, struct chat_node* _node)
 {
 	// check list has data
 	{
-		// loop until last node is found
+		// initialize working node with head
 
-		// point last node's next pointer to node
+		// loop until last node is found
+		{
+			// check working node is equivalent to incoming node
+			{
+				// break because client is already in the room
+			}
+			
+			// advance working node
+		}
+
+		// point last node's next pointer to incoming node
 	}
 	// otherwise, assume list is empty
 	{
 		// point head to node
+		
+		// increment size
 	}
-
-	// increment size
 }
 
 void chat_node_init(struct chat_node* _node, size_t _ip_addr, int _port)
