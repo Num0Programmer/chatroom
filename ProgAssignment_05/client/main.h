@@ -18,6 +18,8 @@
 #include "../message.h"
 #include "receiver_handler.h"
 #include "sender_handler.h"
+#include "../aux/properties.h"
+
 
 
 /* structures */
@@ -29,4 +31,5 @@
 /* preprocessor definitions */
 #define FALSE 0
 #define TRUE !FALSE
+#define MAX_CHARS 80
 
