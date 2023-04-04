@@ -6,7 +6,7 @@
 
 
 #define DBG
-#include "dbg.h"
+//#include "dbg.h"
 
 #include "properties.h"
 
@@ -55,7 +55,7 @@ Properties* property_read_properties(char* properties_file_string)
 
     // open file
     properties_file = fopen(properties_file_string, "r");
-    probe(properties_file, "Opening property file \"%s\" failed!", properties_file_string)
+    probe(properties_file, "Opening property file \"%s\" failed!", properties_file_string);
     //debug("Property file \"%s\" opened successfully!", properties_file_string);
 
     // run through the lines of the properties file and
@@ -135,7 +135,7 @@ void property_list_add_property(Properties* properties, Property* property)
 #include <stdio.h>
 #include "properties.h"
 
-int _main(int argc, const char * argv[]) {
+int main(int argc, const char * argv[]) {
 
     char* properties_file = "test.properties";
     Properties* properties;

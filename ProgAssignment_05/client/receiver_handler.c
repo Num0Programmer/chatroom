@@ -10,7 +10,7 @@ void* receiver_handler(void* _)
 {
 	printf("receiver handler called here!\n");
 	// define networking information
-	
+
 	// initialize mutex
 
 	// create client disconnect signal

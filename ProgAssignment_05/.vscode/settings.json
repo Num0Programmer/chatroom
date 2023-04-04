@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "receiver_handler.h": "c",
+        "sender_handler.h": "c",
+        "properties.h": "c"
+    }
+}
