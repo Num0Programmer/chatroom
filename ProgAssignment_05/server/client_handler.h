@@ -4,6 +4,17 @@
 
 
 /* structures */
+struct client
+{
+	int sock;
+	struct client* next_client;
+};
+
+struct client_list
+{
+	size_t num_clients;
+	struct client* head;
+};
 
 
 /* function prototypes */
