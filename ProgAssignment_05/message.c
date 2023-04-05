@@ -20,3 +20,19 @@ void note_init(struct note* _note, char* _username, char* _sentence, uint8_t _le
 	// set length to incoming length
 }
 
+void read_message(struct message* _message)
+{
+}
+
+void read_note(struct note* _note)
+{
+}
+
+void write_message(struct message* _message)
+{
+}
+
+void write_note(struct note* _note)
+{
+}
+
