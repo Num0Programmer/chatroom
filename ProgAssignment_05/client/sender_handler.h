@@ -25,6 +25,7 @@ struct handler_args
 
 /* function prototypes */
 void* sender_handler(void* _handler_args);
+void* join_server(void* _handler_args);
 
 
 /* preprocessor definitions */
