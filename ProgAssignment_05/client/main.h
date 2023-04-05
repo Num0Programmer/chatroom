@@ -21,7 +21,6 @@
 #include "../aux/properties.h"
 
 
-
 /* structures */
 
 

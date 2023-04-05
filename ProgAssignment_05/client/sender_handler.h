@@ -18,7 +18,7 @@ struct handler_args
 
 
 /* function prototypes */
-void* sender_handler(void* _message);
+void* sender_handler(void* _handler_args);
 
 
 /* preprocessor definitions */

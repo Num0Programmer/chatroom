@@ -9,7 +9,7 @@
 struct message
 {
 	uint8_t type;
-	size_t ip_addr;
+	uint8_t ip_addr[4];
 	int port;
 	struct note* note;
 };

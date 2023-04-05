@@ -12,7 +12,7 @@ int main(int argc, char** argv)
 	// define thread information
 	pthread_t rec_thread;
 	pthread_mutex_init(&mutex, NULL);
-	// define networking information
+	// define argument struct for handlers
 	struct handler_args* handler_args = (struct handler_args*)malloc(
 		sizeof(struct handler_args)
 	);
@@ -20,26 +20,48 @@ int main(int argc, char** argv)
 	// initialize client input c-string
 	char client_input[MAX_CHARS];
 	memset(client_input, 0, sizeof client_input);
-
-	// capture command line input
-	fgets(client_input, MAX_CHARS, stdin);
 	
 	// used to do initial conn in send and rec handlers
 	struct message* join_message = (struct message*)malloc(
 		sizeof(struct message)
 	);
+
+	// capture command line input
+	fgets(client_input, MAX_CHARS, stdin);
+
 	// check input length is greater than "JOIN"
 	if (strlen(client_input) > strlen("JOIN"))
 	{
+		char command[12];
 		// initialize networking information with custom information
-		printf("Custom info \n");
-		
+		sscanf(client_input, "%s", command);
+
+		// check JOIN command given
+		if (strcmp(command, "JOIN") == 0)
+		{
+			join_message->type = JOIN;
+			sscanf(client_input, "%s %hhu.%hhu.%hhu.%hhu %d",
+				command,
+				&join_message->ip_addr[0],
+				&join_message->ip_addr[1],
+				&join_message->ip_addr[2],
+				&join_message->ip_addr[3],
+				&join_message->port
+			);
+		}
+		// otherwise, assume user entered something the program cannot process at this point
+		else
+		{
+			printf("Please use \"JOIN <chat room IP> <chat room port>\" to join a room\n");
+			exit(EXIT_FAILURE);
+		}
 	}
 	else // otherwise, assume default configuration information
 	{
 		// initialize networking information with default information
 		printf("default info \n");
 	}
+	handler_args->message = join_message;
 	handler_args->mutex = &mutex;
 
 	// start sender - pass networking information
