@@ -9,8 +9,20 @@ int main (int argc, char** argv)
 {
 	int server_socket;					// descriptor of server socket
 	struct sockaddr_in server_address;	// naming the server's listening socket
-	
+
+	struct chat_node_list* my_client_list;	// list of clients currently in the
+											// chatroom
+
+	// packaged arguements the client_handler() will need
+	struct handler_args* handler_args = (struct handler_args*)malloc(
+		sizeof(struct handler_args)
+	);
+
+	// initialize application critical structures
 	pthread_mutex_init(&mutex, NULL);
+	chat_node_list_init(my_client_list);
+	handler_args->client_list = my_client_list;
+	handler_args->mutex = &mutex;
 
 	signal(SIGPIPE, SIG_IGN);	// sent when client disconnected
 
@@ -60,7 +72,7 @@ int main (int argc, char** argv)
 
 		// create and relegate client to dedicated thread
 		pthread_t thread;
-		if (pthread_create(&thread, NULL, client_handler, (void*)&client_socket) != 0)
+		if (pthread_create(&thread, NULL, client_handler, (void*)handler_args) != 0)
 		{
 			perror("Error creating socket");
 			exit(EXIT_FAILURE);

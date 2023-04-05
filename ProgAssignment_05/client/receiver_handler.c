@@ -86,7 +86,7 @@ void* handle_conn(void* _sock)
 		// case SHUTDOWN
 			// print shutdown log
 
-		// assume node
+		// assume NOTE
 			// print message
 	}
 

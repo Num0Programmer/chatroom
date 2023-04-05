@@ -10,7 +10,10 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+
+#include "../chat_node.h"
 #include "client_handler.h"
+#include "../message.h"
 
 
 /* structures */
