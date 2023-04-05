@@ -31,18 +31,28 @@ void add_chat_node(struct chat_node_list* _list, struct chat_node* _node)
 	}
 }
 
-void chat_node_init(struct chat_node* _node, size_t _ip_addr, int _port)
+struct chat_node* chat_node_init(uint8_t* _ip_addr, int _port)
 {
+	// allocate memory for a new node
+
 	// set ip address to ip_addr
 	
 	// set port number to port
+	
+	// return pointer to new node
+	return NULL;
 }
 
-void chat_node_list_init(struct chat_node_list* _list)
+struct chat_node_list* chat_node_list_init(void)
 {
+	// allocate memory for a new list
+
 	// set size to zero
 	
 	// set head to NULL
+	
+	// return pointer to new list
+	return NULL;
 }
 
 void remove_chat_node(struct chat_node_list* _list, size_t _ip_addr)
