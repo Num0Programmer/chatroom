@@ -37,9 +37,9 @@ enum types
 void message_init(struct message* _message, uint8_t _type, size_t _ip_addr, int _port, struct note* _node);
 void note_init(struct note* _note, char* _username, char* _sentence, uint8_t _len);
 void read_message(struct message* _message);
-void read_note(struct note* _note);
+void read_note(struct note* _note, int _sock);
 void write_message(struct message* _message);
-void write_note(struct note* _note);
+void write_note(struct note* _note, int _sock);
 
 
 /* preprocessor definitions */

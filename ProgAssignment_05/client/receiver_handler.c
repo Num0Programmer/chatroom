@@ -66,14 +66,7 @@ void* handle_conn(void* _sock)
 
 	// unlock mutex
 
-	// write MESSAGE
-		// write type - ntoh
-		// write ip_addr - ntoh
-		// write port - ntoh
-	// write NOTE
-		// write username
-		// write sentence
-		// write length - ntoh
+	// read message
 	
 	// switch based on message type
 	{

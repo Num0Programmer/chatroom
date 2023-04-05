@@ -19,14 +19,7 @@ void* sender_handler(void* _message)
 		// exit program
 	}
 
-	// write MESSAGE
-		// write type - htonl
-		// write ip_addr - htonl
-		// write port - htonl
-	// write NOTE
-		// write username
-		// write sentence
-		// write length - htonl
+	// write message
 
 	// exit function
 	// close socket
