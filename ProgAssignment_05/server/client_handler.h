@@ -3,6 +3,7 @@
 #include <unistd.h>
 
 #include "../chat_node.h"
+#include "../message.h"
 
 
 /* structures */

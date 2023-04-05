@@ -8,7 +8,7 @@ RM_ALL := rm -rf ./.DS_Store *.dSYM ./*.o ./server/*.o ./client/*.o chat_server 
 all: server client
 
 server: ./server/client_handler.o ./server/main.c ./chat_node.o ./message.o ./server/main.h
-	$(CC) ./server/client_handler.o ./server/main.c -o chat_server $(LDFLAGS)
+	$(CC) ./server/client_handler.o ./chat_node.o ./message.o ./server/main.c -o chat_server $(LDFLAGS)
 
 client_handler.o: ./server/client_handler.c ./server/client_handler.h
 	$(CC) $(CFLAGS) ./server/client_handler.c
