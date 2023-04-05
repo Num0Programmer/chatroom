@@ -9,9 +9,9 @@ int main (int argc, char** argv)
 {
 	int server_socket;					// descriptor of server socket
 	struct sockaddr_in server_address;	// naming the server's listening socket
-
-	struct chat_node_list* my_client_list;	// list of clients currently in the
-											// chatroom
+	
+	// list of clients currently in the chatroom
+	struct chat_node_list* my_client_list = chat_node_list_init();
 
 	// packaged arguements the client_handler() will need
 	struct handler_args* handler_args = (struct handler_args*)malloc(
@@ -20,7 +20,6 @@ int main (int argc, char** argv)
 
 	// initialize application critical structures
 	pthread_mutex_init(&mutex, NULL);
-	chat_node_list_init(my_client_list);
 	handler_args->client_list = my_client_list;
 	handler_args->mutex = &mutex;
 
