@@ -6,12 +6,13 @@
 
 
 /* function implementation */
-void* sender_handler(void* _message)
+void* sender_handler(void* _handler_args)
 {
 	printf("sender handler called here!\n");
-	// define networking information
-
+	// exact networking information
 	// initialize networking informaion
+	
+	// unlock mutex
 	
 	// connect to socket
 	{
@@ -22,6 +23,7 @@ void* sender_handler(void* _message)
 	// write message
 
 	// exit function
+	// free message in handler args
 	// close socket
 	pthread_exit(NULL);
 }

@@ -10,6 +10,11 @@
 
 
 /* structures */
+struct handler_args
+{
+	pthread_mutex_t* mutex;
+	struct message* message;
+};
 
 
 /* function prototypes */
