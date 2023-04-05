@@ -21,14 +21,6 @@ struct chat_node_list
 
 
 /* enums and externs */
-enum types
-{
-	NOTE,
-	JOIN,
-	LEAVE,
-	SHUTDOWN,
-	SHUTDOWN_ALL
-};
 
 
 /* function prototypes */

@@ -22,6 +22,17 @@ struct note
 };
 
 
+/* enums and externs */
+enum types
+{
+	NOTE,
+	JOIN,
+	LEAVE,
+	SHUTDOWN,
+	SHUTDOWN_ALL
+};
+
+
 /* function prototypes */
 void message_init(struct message* _message, uint8_t _type, size_t _ip_addr, int _port, struct note* _node);
 void note_init(struct note* _note, char* _username, char* _sentence, uint8_t _len);
