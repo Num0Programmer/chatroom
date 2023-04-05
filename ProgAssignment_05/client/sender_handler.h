@@ -1,5 +1,9 @@
-#include <stdio.h>
+#include <arpa/inet.h>
 #include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/socket.h>
+#include <unistd.>
 
 #include "../chat_node.h"
 #include "../message.h"
