@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#include "sender_handler.h"
 #include "../chat_node.h"
 #include "../message.h"
 
@@ -17,7 +18,7 @@
 
 
 /* function prototypes */
-void* receiver_handler(void* _message);
+void* receiver_handler(void* _);
 void* handle_conn(void* _sock);
 int read_complete(int _sock, int* int_value_ptr, size_t size);
 

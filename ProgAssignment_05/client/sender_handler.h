@@ -12,8 +12,8 @@
 /* structures */
 struct handler_args
 {
+	char* console_input;
 	pthread_mutex_t* mutex;
-	struct message* message;
 };
 
 

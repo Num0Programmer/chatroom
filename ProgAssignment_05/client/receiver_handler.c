@@ -6,7 +6,7 @@ pthread_mutex_t mutex;
 
 
 /* function implementation */
-void* receiver_handler(void* _message)
+void* receiver_handler(void* _)
 {
 	printf("receiver handler called here!\n");
 	// define networking information

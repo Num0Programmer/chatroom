@@ -9,8 +9,19 @@
 void* sender_handler(void* _handler_args)
 {
 	printf("sender handler called here!\n");
-	// exact networking information
+	// extract networking information
 	// initialize networking informaion
+	
+	// define message construction variables
+	
+	// switch based on command
+	{
+		// case JOIN
+		// case LEAVE
+		// case SHUTDOWN
+		// case SHUTDOWN_ALL
+		// assume NOTE
+	}
 	
 	// unlock mutex
 	
