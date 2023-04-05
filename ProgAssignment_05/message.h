@@ -34,8 +34,8 @@ enum types
 
 
 /* function prototypes */
-struct message* default_message();
-struct note* default_note();
+struct message* default_message(void);
+struct note* default_note(void);
 struct message* message_init(uint8_t _type, uint8_t* _ip_addr, int _port, struct note* _node);
 struct note* note_init(char* _username, char* _sentence, uint8_t _len);
 void read_message(struct message* _message);
