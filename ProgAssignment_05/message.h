@@ -34,8 +34,10 @@ enum types
 
 
 /* function prototypes */
-void message_init(struct message* _message, uint8_t _type, size_t _ip_addr, int _port, struct note* _node);
-void note_init(struct note* _note, char* _username, char* _sentence, uint8_t _len);
+struct message* default_message();
+struct note* default_note();
+struct message* message_init(uint8_t _type, uint8_t* _ip_addr, int _port, struct note* _node);
+struct note* note_init(char* _username, char* _sentence, uint8_t _len);
 void read_message(struct message* _message);
 void read_note(struct note* _note, int _sock);
 void write_message(struct message* _message);
