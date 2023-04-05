@@ -18,6 +18,8 @@ struct handler_args
 {
 	char* console_input;
 	pthread_mutex_t* mutex;
+	char* ip_addr;
+	int port;
 };
 
 
