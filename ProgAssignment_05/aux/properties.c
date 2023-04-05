@@ -135,7 +135,7 @@ void property_list_add_property(Properties* properties, Property* property)
 #include <stdio.h>
 #include "properties.h"
 
-int main(int argc, const char * argv[]) {
+int _main(int argc, const char * argv[]) {
 
     char* properties_file = "test.properties";
     Properties* properties;
