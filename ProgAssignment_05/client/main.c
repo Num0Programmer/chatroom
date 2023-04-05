@@ -26,6 +26,8 @@ int main(int argc, char** argv)
 
 	handler_args->console_input = client_input;
 	handler_args->mutex = &mutex;
+	handler_args->ip_addr = DEFAULT_IP;
+	handler_args->port = DEFAULT_PORT;
 
 	// start sender - pass networking information
 	sender_handler((void*)&handler_args);	// assuming unlocking a locked
