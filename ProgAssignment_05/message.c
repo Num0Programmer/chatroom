@@ -7,14 +7,25 @@
 /* function implementation */
 struct message* default_message()
 {
-	// return pointer to anonymous message
-	return (struct message*)malloc(sizeof(struct message));
+	struct message* m = (struct message*)malloc(sizeof(struct message));
+	
+	m->type = NOTE;
+	m->ip_addr = {0, 0, 0, 0};
+	m->port = 0;
+	m->note = default_note();
+
+	return m;
 }
 
 struct note* default_note()
 {
-	// return pointer to anonymous note
-	return (struct note*)malloc(sizeof(struct note));
+	struct note* n = (struct note*)malloc(sizeof(struct note));
+	
+	n->username = {};
+	n->sentence = {};
+	n->length = 0;
+	
+	return n;
 }
 
 struct message* message_init(uint8_t _type, size_t _ip_addr, int _port, struct note* _node)

@@ -16,7 +16,7 @@ struct message
 
 struct note
 {
-	char usernamen[16];
+	char username[16];
 	char sentence[64];
 	uint8_t length;
 };
