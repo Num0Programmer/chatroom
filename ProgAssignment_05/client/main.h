@@ -18,7 +18,7 @@
 #include "../message.h"
 #include "receiver_handler.h"
 #include "sender_handler.h"
-#include "../aux/properties.h"
+#include "../aux/properties.c"
 
 
 /* structures */
@@ -31,4 +31,5 @@
 #define FALSE 0
 #define TRUE !FALSE
 #define MAX_CHARS 80
-
+#define DEFAULT_IP "127.0.0.1"
+#define DEFAULT_PORT 25565

@@ -18,11 +18,14 @@ struct handler_args
 {
 	char* console_input;
 	pthread_mutex_t* mutex;
+	char* ip_addr;
+	int port;
 };
 
 
 /* function prototypes */
 void* sender_handler(void* _handler_args);
+void* join_server(void* _handler_args);
 
 
 /* preprocessor definitions */

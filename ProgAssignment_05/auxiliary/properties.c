@@ -6,7 +6,7 @@
 
 
 #define DBG
-//#include "dbg.h"
+#include "dbg.h"
 
 #include "properties.h"
 
@@ -135,7 +135,7 @@ void property_list_add_property(Properties* properties, Property* property)
 #include <stdio.h>
 #include "properties.h"
 
-int main(int argc, const char * argv[]) {
+int _main(int argc, const char * argv[]) {
 
     char* properties_file = "test.properties";
     Properties* properties;
@@ -145,6 +145,12 @@ int main(int argc, const char * argv[]) {
     properties = property_read_properties(properties_file);
     value = property_get_property(properties, key);
     
+    printf("\nValue for %s: %s\n", key, value);
+
+    key = "IP";
+
+    properties = property_read_properties(properties_file);
+    value = property_get_property(properties, key);
     printf("\nValue for %s: %s\n", key, value);
 
     return EXIT_SUCCESS;
