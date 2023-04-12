@@ -18,7 +18,7 @@
 #include "../message.h"
 #include "receiver_handler.h"
 #include "sender_handler.h"
-#include "../auxiliary/properties.c"
+#include "../auxiliary/properties.h"
 
 
 /* structures */
