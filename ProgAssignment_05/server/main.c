@@ -67,11 +67,13 @@ int main (int argc, char** argv)
 
 		// accept client
 		int client_socket = accept(server_socket, NULL, NULL);
+		
 		printf("\nServer with PID %d: accepted client\n", getpid());
+		handler_args->sock = client_socket;
 
 		// create and relegate client to dedicated thread
 		pthread_t thread;
-		if (pthread_create(&thread, NULL, client_handler, (void*)handler_args) != 0)
+		if (pthread_create(&thread, NULL, client_handler, (void*)&handler_args) != 0)
 		{
 			perror("Error creating socket");
 			exit(EXIT_FAILURE);
