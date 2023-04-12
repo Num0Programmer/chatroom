@@ -15,6 +15,8 @@ void* sender_handler(void* _handler_args)
     int sock;
     struct sockaddr_in client_addr;
 
+	
+
     sock = socket(AF_INET, SOCK_STREAM, 0);
     client_addr.sin_family = AF_INET;
     client_addr.sin_addr.s_addr = inet_addr(LOCAL_SERVER_ADDR);
@@ -43,6 +45,8 @@ void* sender_handler(void* _handler_args)
     }
 	
 	// write message
+	write(sock, "5", sizeof(int));
+
 
 	// exit function
 	// free message in handler args
