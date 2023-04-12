@@ -5,6 +5,7 @@
 #include "../chat_node.h"
 #include "../message.h"
 
+#define MSG_SIZE 80
 
 /* structures */
 struct handler_args
