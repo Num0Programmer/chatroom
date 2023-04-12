@@ -11,6 +11,14 @@ void* sender_handler(void* _handler_args)
 	printf("sender handler called here!\n");
 	// extract networking information
 	// initialize networking informaion
+	    // networking information
+    int sock;
+    struct sockaddr_in client_addr;
+
+    sock = socket(AF_INET, SOCK_STREAM, 0);
+    client_addr.sin_family = AF_INET;
+    client_addr.sin_addr.s_addr = inet_addr(LOCAL_SERVER_ADDR);
+    client_addr.sin_port = htons(LOCAL_SERVER_PORT);
 	
 	// define message construction variables
 	
@@ -24,6 +32,12 @@ void* sender_handler(void* _handler_args)
 	}
 	
 	// unlock mutex
+    
+   if (connect(sock, (struct sockaddr *)&client_addr, sizeof(client_addr)) == -1)
+    {
+        printf("Error: connection unsuccessful!\n");
+        exit(EXIT_FAILURE);
+    }
 	
 	// connect to socket
 	{
