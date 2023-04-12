@@ -5,13 +5,26 @@
 void* client_handler(void* _args)
 {
 	printf("client handler called here!\n");
-	// cast incoming arguments back to handler_args
-	// extract socket
+
+	// msg to test received
+	char msg[MSG_SIZE] = "this is a test";
+
+	// making void* _args into usable handler_args
+	struct handler_args* handler_args = (struct handler_args*)_args;
+
+	// giving client_socket it's own variable
+	int client_socket = *((int*)&handler_args->sock);
+
 	// allocate memory for a message
 	
 	// unlock mutex
 	
 	// read a message from the socket
+    read(client_socket, &msg, sizeof(char) * MSG_SIZE);
+	printf("past read!\n");
+	printf("Received: %s\n", msg);
+
+
 	
 	// switch based on message type
 	{
