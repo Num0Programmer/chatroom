@@ -68,6 +68,9 @@ void* join_server(void* _handler_args)
 		// use defines to grab default port
 
 	// should set a flag of some sort so the user can't rejoin if they are already joined
+
+	// stub return
+	return 0;
 }
 
 
