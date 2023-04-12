@@ -33,23 +33,22 @@ void* sender_handler(void* _handler_args)
 	
 	// unlock mutex
     
+	// connect to socket
    if (connect(sock, (struct sockaddr *)&client_addr, sizeof(client_addr)) == -1)
     {
+		// report socket creation error
         printf("Error: connection unsuccessful!\n");
+		// exit program
         exit(EXIT_FAILURE);
     }
 	
-	// connect to socket
-	{
-		// report socket creation error
-		// exit program
-	}
-
 	// write message
 
 	// exit function
 	// free message in handler args
 	// close socket
+	close(sock);
+
 	pthread_exit(NULL);
 }
 
