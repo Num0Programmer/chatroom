@@ -30,7 +30,7 @@ void* client_handler(void* _args)
 	{
 		printf("%s", msg);
 	}
-	if (n < 0)
+	if (read_return < 0)
 	{
 		printf("read error \n");
 	}
