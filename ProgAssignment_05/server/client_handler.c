@@ -5,9 +5,14 @@
 void* client_handler(void* _args)
 {
 	printf("client handler called here!\n");
+	int read_return;
+	char msg[MSG_SIZE];
+
+	// zeroing out array
+	memset(msg, 0, MSG_SIZE);
 
 	// msg to test received
-	char msg[MSG_SIZE] = "this is a test";
+
 
 	// making void* _args into usable handler_args
 	struct handler_args* handler_args = (struct handler_args*)_args;
@@ -18,13 +23,18 @@ void* client_handler(void* _args)
 	// allocate memory for a message
 	
 	// unlock mutex
-	
+
 	// read a message from the socket
-    read(client_socket, &msg, sizeof(char) * MSG_SIZE);
-	printf("past read!\n");
-	printf("Received: %s\n", msg);
-
-
+	
+    while (( read_return = read(client_socket, msg, MSG_SIZE)) > 0)
+	{
+		printf("%s", msg);
+	}
+	if (n < 0)
+	{
+		printf("read error \n");
+	}
+	
 	
 	// switch based on message type
 	{

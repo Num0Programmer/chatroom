@@ -6,10 +6,13 @@
 #include <unistd.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <string.h>
 
 
 #include "../chat_node.h"
 #include "../message.h"
+
+#define MSG_SIZE 80
 
 #define LOCAL_SERVER_ADDR "127.0.0.1"
 #define LOCAL_SERVER_PORT 23657

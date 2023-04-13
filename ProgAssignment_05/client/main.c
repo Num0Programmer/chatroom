@@ -30,7 +30,7 @@ int main(int argc, char** argv)
 	handler_args->port = DEFAULT_PORT;
 
 	// start sender - pass networking information
-	sender_handler((void*)&handler_args);	// assuming unlocking a locked
+	sender_handler((void*)handler_args);	// assuming unlocking a locked
 											// mutex doesn't messup anything
 
 	// start receiver thread - pass networking information

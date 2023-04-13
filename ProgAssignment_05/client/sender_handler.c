@@ -13,14 +13,14 @@ void* sender_handler(void* _handler_args)
 	// initialize networking informaion
 	    // networking information
     int sock;
-    struct sockaddr_in client_addr;
+    struct sockaddr_in server_addr;
 
-	
+	struct handler_args* handler_args = (struct handler_args*)_handler_args;
 
     sock = socket(AF_INET, SOCK_STREAM, 0);
-    client_addr.sin_family = AF_INET;
-    client_addr.sin_addr.s_addr = inet_addr(LOCAL_SERVER_ADDR);
-    client_addr.sin_port = htons(LOCAL_SERVER_PORT);
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_addr.s_addr = inet_addr(handler_args->ip_addr);
+    server_addr.sin_port = htons(handler_args->port);
 	
 	// define message construction variables
 	
@@ -36,16 +36,23 @@ void* sender_handler(void* _handler_args)
 	// unlock mutex
     
 	// connect to socket
-   if (connect(sock, (struct sockaddr *)&client_addr, sizeof(client_addr)) == -1)
+   if (connect(sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1)
     {
 		// report socket creation error
         printf("Error: connection unsuccessful!\n");
 		// exit program
         exit(EXIT_FAILURE);
     }
+
+	char msg[MSG_SIZE]; 
+	int sendbytes = strlen(handler_args->console_input);
+
+	// copying console_input into msg with length of console_input + 1
+	memcpy(msg, handler_args->console_input, sendbytes+1);
 	
-	// write message
-	write(sock, "5", sizeof(int));
+	 // write to server
+    if(write(sock, msg, sendbytes) != sendbytes)
+		printf("write error\n");
 
 
 	// exit function
