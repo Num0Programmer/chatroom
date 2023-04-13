@@ -19,7 +19,9 @@ int main(int argc, char** argv)
 
 	// initialize client input c-string
 	char client_input[MAX_CHARS];
-	memset(client_input, 0, sizeof client_input);
+
+	// zero out clint_input
+	memset(client_input, 0, MAX_CHARS);
 
 	// capture command line input
 	fgets(client_input, MAX_CHARS, stdin);
@@ -39,14 +41,18 @@ int main(int argc, char** argv)
 	// while chatting code is not equal to SHUTDOWN
 	while (strcmp(client_input,"SHUTDOWN\n") != 0)
 	{
+		// zero out clint_input
+		memset(client_input, 0, MAX_CHARS);
+
 		// capture input from command line
 		fgets(client_input, MAX_CHARS, stdin);
 
-		handler_args->console_input = client_input;
+		// copying client_input into handler_args
+		memcpy(handler_args->console_input, client_input, MAX_CHARS);
 
 		// start sender thread - hand message to send
 		pthread_t thread;
-		if (pthread_create(&thread, NULL, sender_handler, (void*)&handler_args) != 0)
+		if (pthread_create(&thread, NULL, sender_handler, (void*)handler_args) != 0)
 		{
 			perror("Error failure creating thread");
 			exit(EXIT_FAILURE);

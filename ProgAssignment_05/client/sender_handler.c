@@ -17,6 +17,7 @@ void* sender_handler(void* _handler_args)
 
 	struct handler_args* handler_args = (struct handler_args*)_handler_args;
 
+
     sock = socket(AF_INET, SOCK_STREAM, 0);
     server_addr.sin_family = AF_INET;
     server_addr.sin_addr.s_addr = inet_addr(handler_args->ip_addr);
