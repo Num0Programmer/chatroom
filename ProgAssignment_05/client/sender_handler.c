@@ -35,24 +35,24 @@ void* sender_handler(void* _handler_args)
 	switch (command)
 	{
 		case JOIN:
-		printf("join command\n");
-		break;
+			printf("join command\n");
+			break;
 
 		case LEAVE:
-		printf("leave command\n");
-		break;
+			printf("leave command\n");
+			break;
 
 		case SHUTDOWN:
-		printf("shutdown command\n");
-		break;
+			printf("shutdown command\n");
+			break;
 
 		case SHUTDOWN_ALL:
-		printf("shutdownn command\n");
-		break;
+			printf("shutdown all command\n");
+			break;
 	
 		default:
-		printf("assumed note command\n");
-		break;
+			printf("assumed note command\n");
+			break;
 	}
 	
 	// unlock mutex
@@ -68,6 +68,8 @@ void* sender_handler(void* _handler_args)
 
 	// copying console_input into msg with length of console_input + 1
 	// memcpy(msg, handler_args->console_input, sendbytes+1);
+
+	msg.type = 1;
 
 	 // write to server
     if(write(sock, &msg, sizeof(msg)) != sizeof(struct message))
@@ -115,63 +117,5 @@ void* join_server(void* _handler_args)
 	// stub return
 	return 0;
 }
-
-int command_read(char* input_string)
-{
-	char *command_string;
-	char *second_string;
-
-	int command_num;
-
-	// parse input_string for the command
-
-	// captures the first string which should be a command
-	command_string = strtok_r(input_string, " ", &input_string);
-
-	// compare the command_string to possible commands
-	// check for join command
-	if (strcmp(command_string, "JOIN\n") == 0)
-	{
-		command_num = JOIN;
-	}
-
-	// otherwise check for leave command
-	else if (strcmp(command_string, "LEAVE\n") == 0)
-	{
-		command_num = LEAVE;
-	}
-
-	// otherwise check for shutdown command with and with out newline
-	else if (strcmp(command_string, "SHUTDOWN\n") == 0 || 
-			 strcmp(command_string, "SHUTDOWN") == 0)
-	{
-		command_num = SHUTDOWN;
-
-		// check to see if the next token is "all"
-		second_string = strtok_r(input_string, " ", &input_string);
-
-		// check that the second_string isn't null ( this is to avoid comparing test_string with
-		// NULL and giving us a seg fault)
-		if (second_string != NULL)
-		{
-			// if it is, change the command string to SHUTDOWN ALL
-			if (strcmp(second_string, "ALL\n") == 0)
-			{
-				command_num = SHUTDOWN_ALL;
-			}
-		}
-		
-
-	}
-
-	// otherwise assume note
-	else
-	{
-		command_num = NOTE;
-	}
-	// return the number associated with the enum command
-	return command_num;
-}
-
 
 

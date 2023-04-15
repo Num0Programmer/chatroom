@@ -12,6 +12,7 @@
 #include "../chat_node.h"
 #include "../message.h"
 
+
 #define MSG_SIZE 80
 
 #define LOCAL_SERVER_ADDR "127.0.0.1"
@@ -36,8 +37,6 @@ struct handler_args
 /* function prototypes */
 void* sender_handler(void* _handler_args);
 void* join_server(void* _handler_args);
-int command_read(char* input_string);
-
 
 /* preprocessor definitions */
 

@@ -84,3 +84,59 @@ void write_note(struct note* _note, int _sock)
 	// write length to socket
 }
 
+int command_read(char* input_string)
+{
+	char *command_string;
+	char *second_string;
+
+	int command_num;
+
+	// parse input_string for the command
+
+	// captures the first string which should be a command
+	command_string = strtok_r(input_string, " ", &input_string);
+
+	// compare the command_string to possible commands
+	// check for join command
+	if (strcmp(command_string, "JOIN\n") == 0)
+	{
+		command_num = JOIN;
+	}
+
+	// otherwise check for leave command
+	else if (strcmp(command_string, "LEAVE\n") == 0)
+	{
+		command_num = LEAVE;
+	}
+
+	// otherwise check for shutdown command with and with out newline
+	else if (strcmp(command_string, "SHUTDOWN\n") == 0 || 
+			 strcmp(command_string, "SHUTDOWN") == 0)
+	{
+		command_num = SHUTDOWN;
+
+		// check to see if the next token is "all"
+		second_string = strtok_r(input_string, " ", &input_string);
+
+		// check that the second_string isn't null ( this is to avoid comparing test_string with
+		// NULL and giving us a seg fault)
+		if (second_string != NULL)
+		{
+			// if it is, change the command string to SHUTDOWN ALL
+			if (strcmp(second_string, "ALL\n") == 0)
+			{
+				command_num = SHUTDOWN_ALL;
+			}
+		}
+	}
+
+	// otherwise assume note
+	else
+	{
+		command_num = NOTE;
+	}
+	
+	// return the number associated with the enum command
+	return command_num;
+}
+

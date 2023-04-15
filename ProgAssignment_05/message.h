@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 
 
 #ifndef MESSAGE_H
@@ -43,6 +44,8 @@ void read_message(struct message* _message);
 void read_note(struct note* _note, int _sock);
 void write_message(struct message* _message);
 void write_note(struct note* _note, int _sock);
+int command_read(char* input_string);
+
 
 
 /* preprocessor definitions */
