@@ -6,19 +6,20 @@
 
 
 /* structures */
-struct message
-{
-	uint8_t type;
-	uint8_t ip_addr[4];
-	int port;
-	struct note* note;
-};
 
 struct note
 {
 	char username[16];
 	char sentence[64];
 	uint8_t length;
+};
+
+struct message
+{
+	uint8_t type;
+	uint8_t ip_addr[4];
+	int port;
+	struct note note;
 };
 
 

@@ -3,8 +3,8 @@
 
 /* global variables */
 
+/*
 
-/* function implementation */
 struct message* default_message(void)
 {
 	struct message* m = (struct message*)malloc(sizeof(struct message));
@@ -28,7 +28,7 @@ struct note* default_note(void)
 	
 	return n;
 }
-
+*/
 struct message* message_init(uint8_t _type, uint8_t* _ip_addr, int _port, struct note* _node)
 {
 	// allocate new memory for a message
