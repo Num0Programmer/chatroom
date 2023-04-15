@@ -26,10 +26,12 @@ int main(int argc, char** argv)
 	// capture command line input
 	fgets(client_input, MAX_CHARS, stdin);
 
+	//grab props
+	grab_props(handler_args);
+
+	// setting console_input and mutex
 	handler_args->console_input = client_input;
 	handler_args->mutex = &mutex;
-	handler_args->ip_addr = DEFAULT_IP;
-	handler_args->port = DEFAULT_PORT;
 
 	// start sender - pass networking information
 	sender_handler((void*)handler_args);	// assuming unlocking a locked
@@ -74,4 +76,28 @@ int main(int argc, char** argv)
 
 
 /* function implementation */
+void* grab_props(struct handler_args* handler_args)
+{
+	// grab properties
+	char* properties_file = "test.properties";
+    Properties* properties;
+    char* key = "MY_PORT";
+    char* value;
+    
+    properties = property_read_properties(properties_file);
+    value = property_get_property(properties, key);
+    
+    printf("\nValue for %s: %s\n", key, value);
+	handler_args->port = atoi(value);
+
+    key = "MY_IP";
+
+    properties = property_read_properties(properties_file);
+    value = property_get_property(properties, key);
+    printf("\nValue for %s: %s\n", key, value);
+
+	handler_args->ip_addr = value;
+
+	return 0;
+}
 

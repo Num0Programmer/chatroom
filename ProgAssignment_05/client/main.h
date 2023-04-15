@@ -25,7 +25,7 @@
 
 
 /* function prototypes */
-
+void* grab_props(struct handler_args* handler_args);
 
 /* preprocessor definitions */
 #define FALSE 0
