@@ -7,7 +7,7 @@ void* client_handler(void* _args)
 	printf("client handler called here!\n");
 	int read_return;
 
-	int command = 0;
+	int command;
 
 	// zeroing out array
 	// memset(msg, 0, MSG_SIZE);
@@ -38,6 +38,8 @@ void* client_handler(void* _args)
 	{
 		printf("read error \n");
 	}
+
+	command = msg.type;
 	
 	// switch based on message type
 	switch (command)
@@ -120,4 +122,3 @@ void* client_handler(void* _args)
 	// close socket
 	pthread_exit(NULL);
 }
-

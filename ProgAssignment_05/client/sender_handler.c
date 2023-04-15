@@ -1,6 +1,6 @@
 #include "sender_handler.h"
  
- // code responsible for 
+// code responsible for 
 
 /* global variables */
 
@@ -54,6 +54,8 @@ void* sender_handler(void* _handler_args)
 			printf("assumed note command\n");
 			break;
 	}
+
+	msg.type = command;
 	
 	// unlock mutex
     
@@ -68,8 +70,6 @@ void* sender_handler(void* _handler_args)
 
 	// copying console_input into msg with length of console_input + 1
 	// memcpy(msg, handler_args->console_input, sendbytes+1);
-
-	msg.type = 1;
 
 	 // write to server
     if(write(sock, &msg, sizeof(msg)) != sizeof(struct message))
