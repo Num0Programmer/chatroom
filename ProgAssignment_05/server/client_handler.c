@@ -7,6 +7,8 @@ void* client_handler(void* _args)
 	printf("client handler called here!\n");
 	int read_return;
 
+	int command = 0;
+
 	// zeroing out array
 	// memset(msg, 0, MSG_SIZE);
 
@@ -14,7 +16,6 @@ void* client_handler(void* _args)
 	// define message construction variables
 
 	struct message msg;
-
 
 	// making void* _args into usable handler_args
 	struct handler_args* handler_args = (struct handler_args*)_args;
@@ -38,10 +39,13 @@ void* client_handler(void* _args)
 		printf("read error \n");
 	}
 	
-	
 	// switch based on message type
+	switch (command)
 	{
 		// case JOIN
+		case JOIN:
+			printf("join command\n");
+			break;
 			// lock mutex
 			
 			// initialize join message
@@ -54,7 +58,11 @@ void* client_handler(void* _args)
 
 			// unlock mutex
 			// break
+
 		// case LEAVE
+		case LEAVE:
+			printf("leave command\n");
+			break;
 			// lock mutex
 			
 			// remove client from list of chat nodes
@@ -65,7 +73,11 @@ void* client_handler(void* _args)
 
 			// unlock mutex
 			// break
+
 		// case SHUTDOWN
+		case SHUTDOWN:
+			printf("shutdown command\n");
+			break;
 			// lock mutex
 
 			// initialize leave message
@@ -79,6 +91,9 @@ void* client_handler(void* _args)
 			// unlock mutex
 			// break
 		// case SHUTDOWN_ALL
+		case SHUTDOWN_ALL:
+			printf("shutdown all command\n");
+			break;
 			// lock mutex
 
 			// initialize leave message
@@ -89,7 +104,11 @@ void* client_handler(void* _args)
 
 			// unlock mutex
 			// break
+
 		// assume NOTE
+		default:
+			printf("assumed note command\n");
+			break;
 			// initialize note message
 
 			// send note message to all chat nodes
