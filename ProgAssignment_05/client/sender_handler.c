@@ -11,7 +11,8 @@ void* sender_handler(void* _handler_args)
 	printf("sender handler called here!\n");
 	// extract networking information
 	// initialize networking informaion
-	    // networking information
+	// networking information
+
     int sock;
 	int command = 0;
     struct sockaddr_in server_addr;
@@ -25,6 +26,7 @@ void* sender_handler(void* _handler_args)
     server_addr.sin_port = htons(handler_args->port);
 	
 	// define message construction variables
+	struct message msg;
 
 	// capture command
 	command = command_read(handler_args->console_input);
@@ -51,7 +53,6 @@ void* sender_handler(void* _handler_args)
 		default:
 		printf("assumed note command\n");
 		break;
-
 	}
 	
 	// unlock mutex
@@ -65,14 +66,11 @@ void* sender_handler(void* _handler_args)
         exit(EXIT_FAILURE);
     }
 
-	char msg[MSG_SIZE]; 
-	int sendbytes = strlen(handler_args->console_input);
-
 	// copying console_input into msg with length of console_input + 1
-	memcpy(msg, handler_args->console_input, sendbytes+1);
-	
+	// memcpy(msg, handler_args->console_input, sendbytes+1);
+
 	 // write to server
-    if(write(sock, msg, sendbytes) != sendbytes)
+    if(write(sock, &msg, sizeof(msg)) != sizeof(struct message))
 		printf("write error\n");
 
 
@@ -174,5 +172,6 @@ int command_read(char* input_string)
 	// return the number associated with the enum command
 	return command_num;
 }
+
 
 

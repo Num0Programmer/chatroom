@@ -6,12 +6,14 @@ void* client_handler(void* _args)
 {
 	printf("client handler called here!\n");
 	int read_return;
-	char msg[MSG_SIZE];
 
 	// zeroing out array
-	memset(msg, 0, MSG_SIZE);
+	// memset(msg, 0, MSG_SIZE);
 
 	// msg to test received
+	// define message construction variables
+
+	struct message msg;
 
 
 	// making void* _args into usable handler_args
@@ -26,9 +28,10 @@ void* client_handler(void* _args)
 
 	// read a message from the socket
 	
-    while (( read_return = read(client_socket, msg, MSG_SIZE)) > 0)
+    while (( read_return = read(client_socket, &msg, sizeof(struct message))) > 0)
 	{
-		printf("%s", msg);
+		printf("port: %d\n", msg.port);
+		printf("length: %d\n", msg.note.length);
 	}
 	if (read_return < 0)
 	{
