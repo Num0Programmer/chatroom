@@ -121,4 +121,5 @@ void* client_handler(void* _args)
 	// exit function
 	// close socket
 	pthread_exit(NULL);
+	
 }
