@@ -19,7 +19,6 @@ void* sender_handler(void* _handler_args)
 
 	struct handler_args* handler_args = (struct handler_args*)_handler_args;
 
-
     sock = socket(AF_INET, SOCK_STREAM, 0);
     server_addr.sin_family = AF_INET;
     server_addr.sin_addr.s_addr = inet_addr(handler_args->ip_addr);
@@ -56,6 +55,10 @@ void* sender_handler(void* _handler_args)
 	}
 
 	msg.type = command;
+	msg.port = handler_args->port;
+	memcpy(msg.ip_addr, handler_args->ip_addr, sizeof(msg.ip_addr));
+
+
 	
 	// unlock mutex
     
@@ -67,9 +70,6 @@ void* sender_handler(void* _handler_args)
 		// exit program
         exit(EXIT_FAILURE);
     }
-
-	// copying console_input into msg with length of console_input + 1
-	// memcpy(msg, handler_args->console_input, sendbytes+1);
 
 	 // write to server
     if(write(sock, &msg, sizeof(msg)) != sizeof(struct message))
