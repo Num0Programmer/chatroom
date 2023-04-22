@@ -18,11 +18,6 @@ void* sender_handler(void* _handler_args)
     struct sockaddr_in server_addr;
 
 	struct handler_args* handler_args = (struct handler_args*)_handler_args;
-
-    sock = socket(AF_INET, SOCK_STREAM, 0);
-    server_addr.sin_family = AF_INET;
-    server_addr.sin_addr.s_addr = inet_addr(handler_args->ip_addr);
-    server_addr.sin_port = htons(handler_args->port);
 	
 	// define message construction variables
 	struct message msg;
@@ -35,6 +30,7 @@ void* sender_handler(void* _handler_args)
 	{
 		case JOIN:
 			printf("join command\n");
+			join_server(handler_args);
 			break;
 
 		case LEAVE:
@@ -54,12 +50,20 @@ void* sender_handler(void* _handler_args)
 			break;
 	}
 
+	// copying data in msg struct
+	// Maybe make this into a function?
 	msg.type = command;
 	msg.port = handler_args->port;
-	memcpy(msg.ip_addr, handler_args->ip_addr, sizeof(msg.ip_addr));
+	memcpy(msg.ip_addr, handler_args->ip_addr, sizeof(strlen(handler_args->ip_addr) + 1));
 
+	printf("%d\n", handler_args->port);
 
-	
+	// filling in socket info
+	sock = socket(AF_INET, SOCK_STREAM, 0);
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_addr.s_addr = inet_addr(handler_args->ip_addr);
+    server_addr.sin_port = htons(23657);
+
 	// unlock mutex
     
 	// connect to socket
@@ -75,7 +79,6 @@ void* sender_handler(void* _handler_args)
     if(write(sock, &msg, sizeof(msg)) != sizeof(struct message))
 		printf("write error\n");
 
-
 	// exit function
 	// free message in handler args
 	// close socket
@@ -86,7 +89,11 @@ void* sender_handler(void* _handler_args)
 
 void* join_server(void* _handler_args)
 {
+	printf("join server\n");
 	// capture properties file, this should be the third arg
+	
+	// loads props into handler_args
+	load_props(_handler_args);
 
 	// check for invalid properties file
 
@@ -117,5 +124,63 @@ void* join_server(void* _handler_args)
 	// stub return
 	return 0;
 }
+
+/*
+desc: grabs properties from the ___.properties file and loads them into the handler_args
+params: *handler_args
+returns: void* with handler_args loaded with props 
+*/
+void load_props(struct handler_args* handler_args)
+{
+	// grab properties
+	char* properties_file = "test.properties";
+    Properties* properties;
+	char* value;
+    char* key = "MY_PORT";
+    
+	// grabbing MY_PORT value from ___.properties
+    properties = property_read_properties(properties_file);
+    value = property_get_property(properties, key);
+    
+	// turning port from string to int
+		// method: atoi()
+	handler_args->port = atoi(value);
+
+	// grabbing IP address from ___.properties
+    key = "MY_IP";
+
+    properties = property_read_properties(properties_file);
+    value = property_get_property(properties, key);
+
+	handler_args->ip_addr = malloc(strlen(value) + 1);
+
+	memcpy(handler_args->ip_addr, value, strlen(value) + 1);
+	printf("%s\n", handler_args->ip_addr);
+
+	// grabbing IP address from ___.properties
+	key = "DEST_PORT";
+
+	// grabbing MY_PORT value from ___.properties
+    properties = property_read_properties(properties_file);
+    value = property_get_property(properties, key);
+    
+	// turning port from string to int
+		// method: atoi()
+	handler_args->dest_port = atoi(value);
+
+	// grabbing DEST_IP address from ___.properties
+    key = "DEST_IP";
+
+    properties = property_read_properties(properties_file);
+    value = property_get_property(properties, key);
+
+	handler_args->dest_ip_addr = malloc(strlen(value) + 1);
+
+	memcpy(handler_args->dest_ip_addr, value, strlen(value) + 1);
+	printf("%s\n", handler_args->dest_ip_addr);
+
+	
+}
+
 
 

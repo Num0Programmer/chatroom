@@ -19,6 +19,7 @@ int main(int argc, char** argv)
 
 	// initialize client input c-string
 	char client_input[MAX_CHARS];
+	char *props_name = argv[1];
 
 	// zero out clint_input
 	memset(client_input, 0, MAX_CHARS);
@@ -26,12 +27,12 @@ int main(int argc, char** argv)
 	// capture command line input
 	fgets(client_input, MAX_CHARS, stdin);
 
-	// loads props into handler_args
-	load_props(handler_args);
-
 	// setting console_input and mutex
+	// maybe make into a quick function?
 	handler_args->console_input = client_input;
 	handler_args->mutex = &mutex;
+	handler_args->props_str = malloc(strlen(props_name) + 1);
+	memcpy(handler_args->props_str, props_name, strlen(props_name) + 1);
 
 	// start sender - pass networking information
 	sender_handler((void*)handler_args);	// assuming unlocking a locked
@@ -76,30 +77,3 @@ int main(int argc, char** argv)
 
 
 /* function implementation */
-/*
-desc: grabs properties from the ___.properties file and loads them into the handler_args
-params: *handler_args
-returns:
-*/
-void load_props(struct handler_args* handler_args)
-{
-	// grab properties
-	char* properties_file = "test.properties";
-    Properties* properties;
-    char* key = "MY_PORT";
-    char* value;
-    
-    properties = property_read_properties(properties_file);
-    value = property_get_property(properties, key);
-    
-	handler_args->port = atoi(value);
-
-    key = "MY_IP";
-
-    properties = property_read_properties(properties_file);
-    value = property_get_property(properties, key);
-
-	handler_args->ip_addr = value;
-
-}
-

@@ -11,6 +11,7 @@
 
 #include "../chat_node.h"
 #include "../message.h"
+#include "../auxiliary/properties.h"
 
 
 #define MSG_SIZE 80
@@ -31,12 +32,16 @@ struct handler_args
 	pthread_mutex_t* mutex;
 	char* ip_addr;
 	int port;
+	char* props_str;
+	char* dest_ip_addr;
+	int dest_port;
 };
 
 
 /* function prototypes */
 void* sender_handler(void* _handler_args);
 void* join_server(void* _handler_args);
+void load_props(struct handler_args* handler_args);
 
 /* preprocessor definitions */
 
