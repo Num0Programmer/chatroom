@@ -86,8 +86,8 @@ void write_note(struct note* _note, int _sock)
 
 int command_read(char* input_string)
 {
-	char *command_string;
-	char *second_string;
+	char *command_string = NULL;
+	char *second_string= NULL;
 
 	int command_num;
 
@@ -96,21 +96,28 @@ int command_read(char* input_string)
 	// captures the first string which should be a command
 	command_string = strtok_r(input_string, " ", &input_string);
 
+	// check if last char is newline
+	if (command_string[strlen(command_string) - 1] == '\n')
+	{
+		// replace lastchar with \0
+		command_string[strlen(command_string) - 1] = '\0';
+	}
+	
 	// compare the command_string to possible commands
 	// check for join command
-	if (strcmp(command_string, "JOIN\n") == 0)
+	if (strcmp(command_string, "JOIN\0") == 0)
 	{
 		command_num = JOIN;
 	}
 
 	// otherwise check for leave command
-	else if (strcmp(command_string, "LEAVE\n") == 0)
+	else if (strcmp(command_string, "LEAVE\0") == 0)
 	{
 		command_num = LEAVE;
 	}
 
 	// otherwise check for shutdown command with and with out newline
-	else if (strcmp(command_string, "SHUTDOWN\n") == 0 || 
+	else if (strcmp(command_string, "SHUTDOWN\0") == 0 || 
 			 strcmp(command_string, "SHUTDOWN") == 0)
 	{
 		command_num = SHUTDOWN;
@@ -123,7 +130,7 @@ int command_read(char* input_string)
 		if (second_string != NULL)
 		{
 			// if it is, change the command string to SHUTDOWN ALL
-			if (strcmp(second_string, "ALL\n") == 0)
+			if (strcmp(second_string, "ALL\0") == 0)
 			{
 				command_num = SHUTDOWN_ALL;
 			}
