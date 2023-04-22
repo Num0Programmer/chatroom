@@ -86,15 +86,21 @@ void write_note(struct note* _note, int _sock)
 
 int command_read(char* input_string)
 {
+	char *cpy_in_str = NULL;
 	char *command_string = NULL;
 	char *second_string= NULL;
 
 	int command_num;
 
+	cpy_in_str = malloc(sizeof(char) * (strlen(input_string) + 1));
+
+	// copy input_string in order to not delete anything
+
 	// parse input_string for the command
+    strcpy(cpy_in_str, input_string);
 
 	// captures the first string which should be a command
-	command_string = strtok_r(input_string, " ", &input_string);
+	command_string = strtok_r(cpy_in_str, " ", &cpy_in_str);
 
 	// check if last char is newline
 	if (command_string[strlen(command_string) - 1] == '\n')
