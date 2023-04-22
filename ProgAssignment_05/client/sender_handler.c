@@ -24,7 +24,7 @@ void* sender_handler(void* _handler_args)
 
 	// capture command
 	command = command_read(handler_args->console_input);
-	
+
 	// switch based on command
 	switch (command)
 	{
@@ -63,7 +63,7 @@ void* sender_handler(void* _handler_args)
     server_addr.sin_port = htons(handler_args->dest_port);
 
 	// unlock mutex
-    
+
 	// connect to socket
    if (connect(sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1)
     {
@@ -82,44 +82,49 @@ void* sender_handler(void* _handler_args)
 	// close socket
 	close(sock);
 
-	pthread_exit(NULL);
 }
 
 void* join_server(void* _handler_args)
 {
-	printf("join server\n");
+	int cmd_len = 0;
+	int default_join_len = 5;
+	char* cpy_con_in= NULL;
+	char* dest_ip_str = NULL;
+	char* dest_port_str = NULL;
+	char* cmd_str = NULL;
+
 	struct handler_args* handler_args = (struct handler_args*)_handler_args;
 
-	
-	// capture properties file, this should be the third arg
-	
+	// malloc space for cpy_con_in
+	cpy_con_in = malloc(sizeof(char) * (strlen(handler_args->console_input) + 1));
+
+	// copy console input
+	strcpy(cpy_con_in, handler_args->console_input);
+		
 	// loads props into handler_args
 	load_props(_handler_args);
 
-	// check for invalid properties file
+	// find command string length
+	cmd_len = strlen(handler_args->console_input);
+
+	// parsing to get back cmd str, cmd_str won't be used
+	cmd_str = strtok_r(cpy_con_in, " ", &cpy_con_in);
 
 	// check for console input being longer then JOIN
-
-
+	if (cmd_len > default_join_len)
+	{
 		// parse and capture the ip_addr
-
-		// check for invalid ip_addr
-
-			// back and ask for valid input
+		dest_ip_str = strtok_r(cpy_con_in, " ", &cpy_con_in);
 
 		// parse and capture the port
+		dest_port_str = strtok_r(cpy_con_in, " ", &cpy_con_in);
 
-			// back and ask for valid input
+		// set port to handler_args dest_port, this overwrites the default
+		handler_args->dest_ip_addr = dest_ip_str;
 
-		// set port to port from ____.properties
-
-		// set ip_addr to id_addr from ____.properties
-
-	// otherwise use the default values
-
-		// use defines to grab default IP
-
-		// use defines to grab default port
+		// set ip_addr to  handler_args dest_ip_addr, this overwrites the default
+		handler_args->dest_port = atoi(dest_port_str);
+	}
 
 	// should set a flag of some sort so the user can't rejoin if they are already joined
 
@@ -179,8 +184,4 @@ void load_props(struct handler_args* handler_args)
 
 	memcpy(handler_args->dest_ip_addr, value, strlen(value) + 1);
 
-	
 }
-
-
-

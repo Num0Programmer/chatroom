@@ -21,6 +21,13 @@ int main(int argc, char** argv)
 	char client_input[MAX_CHARS];
 	char *props_name = argv[1];
 
+	// check if a properties file was given
+	if (props_name == NULL)
+	{
+		printf("No properties file given\n");
+		exit(EXIT_FAILURE);
+	}
+
 	// zero out clint_input
 	memset(client_input, 0, MAX_CHARS);
 

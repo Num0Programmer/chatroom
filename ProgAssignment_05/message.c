@@ -95,8 +95,6 @@ int command_read(char* input_string)
 	cpy_in_str = malloc(sizeof(char) * (strlen(input_string) + 1));
 
 	// copy input_string in order to not delete anything
-
-	// parse input_string for the command
     strcpy(cpy_in_str, input_string);
 
 	// captures the first string which should be a command
