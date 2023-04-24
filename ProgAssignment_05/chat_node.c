@@ -55,7 +55,24 @@ struct chat_node_list* chat_node_list_init(void)
 	return NULL;
 }
 
-void remove_chat_node(struct chat_node_list* _list, size_t _ip_addr)
+void destroy_chat_node_list(struct chat_node_list* _list)
+{
+	// initialize working node with head node
+	// initialize previous node with working node
+
+	// loop until previous node is NULL
+	{
+		// advance working node
+
+		// free previous node
+
+		// point previuos node to working node
+	}
+
+	// free list
+}
+
+void remove_chat_node(struct chat_node_list* _list, uint8_t* _ip_addr)
 {
 	// initialize working node with head node
 	
@@ -75,20 +92,8 @@ void remove_chat_node(struct chat_node_list* _list, size_t _ip_addr)
 	}
 }
 
-void destroy_chat_node_list(struct chat_node_list* _list)
+void write_to_chat_node_list(struct chat_node_list* _list, struct message* _msg)
 {
-	// initialize working node with head node
-	// initialize previous node with working node
-
-	// loop until previous node is NULL
-	{
-		// advance working node
-
-		// free previous node
-
-		// point previuos node to working node
-	}
-
-	// free list
+	printf("write to chat nodes called here!\n");
 }
 
