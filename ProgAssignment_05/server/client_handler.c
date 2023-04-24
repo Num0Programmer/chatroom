@@ -33,9 +33,8 @@ void* client_handler(void* _args)
 			printf("join command\n");
 			pthread_mutex_lock(handler_args->mutex);
 
-			struct chat_node* new_client = chat_node_init(
-				msg->ip_addr, msg->port
-			);
+			struct chat_node* new_client = NULL;
+			chat_node_init(new_client, msg->ip_addr, msg->port);
 			printf("\tconstructed new client node!\n");
 
 			// add new client to list of chat nodes
