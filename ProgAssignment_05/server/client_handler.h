@@ -19,6 +19,11 @@ struct handler_args
 
 /* function prototypes */
 void* client_handler(void* _args);
+void notify_room(
+	struct chat_node_list* _list,
+	char username[16],
+	char* msg_type
+);
 
 
 /* preprocessor definitions */

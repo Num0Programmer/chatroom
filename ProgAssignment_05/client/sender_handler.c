@@ -81,7 +81,7 @@ void* sender_handler(void* _handler_args)
 	// free message in handler args
 	// close socket
 	close(sock);
-
+	pthread_exit(NULL);
 }
 
 void* join_server(void* _handler_args)

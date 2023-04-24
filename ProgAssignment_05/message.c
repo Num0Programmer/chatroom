@@ -3,85 +3,130 @@
 
 /* global variables */
 
-/*
 
-struct message* default_message(void)
+/* function implementation */
+void default_message(struct message* _msg)
 {
-	struct message* m = (struct message*)malloc(sizeof(struct message));
-	
-	m->type = NOTE;
-	m->ip_addr[0] = 0;
-	m->ip_addr[1] = 0;
-	m->ip_addr[2] = 0;
-	m->ip_addr[3] = 0;
-	m->port = 0;
-	m->note = default_note();
+	_msg = (struct message*)malloc(sizeof(struct message));
 
-	return m;
+	_msg->type = NOTE;
+	_msg->port = 9999;	// puts port far out of reach of other ports most
+						// likely being used
+
+	for (size_t i = 0; i < 4; i += 1)
+	{
+		_msg->ip_addr[i] = 0;
+	}
 }
 
-struct note* default_note(void)
+void default_note(struct note* _note)
 {
-	struct note* n = (struct note*)malloc(sizeof(struct note));
-	
-	n->length = 0;
-	
-	return n;
-}
-*/
-struct message* message_init(uint8_t _type, uint8_t* _ip_addr, int _port, struct note* _node)
-{
-	// allocate new memory for a message
+	_note = (struct note*)malloc(sizeof(struct note));
 
-	// set type to incoming type
-	// set ip address to incoming ip address
-	// set port to incoming port
-	// set note to incoming note
-	
-	// return message pointer
-	return NULL;
+	memset(_note->username, 0, 16);
+	memset(_note->sentence, 0, 64);
+	_note->length = 0;
 }
 
-struct note* note_init(char* _username, char* _sentence, uint8_t _len)
+void message_init(
+	struct message* _msg,
+	uint8_t _type,
+	uint8_t* _ip_addr,
+	int _port,
+	struct note* _note
+)
 {
-	// allocate new memory for a note
+	_msg = (struct message*)malloc(sizeof(struct message));
 
-	// set username to incoming username
-	// set sentence to incoming sentence
-	// set length to incoming length
-	
-	// return note pointer
-	return NULL;
+	_msg->type = _type;
+	_msg->port = _port;
+	_msg->note = *_note;
+
+	for (size_t i = 0; i < 4; i += 1)
+	{
+		_msg->ip_addr[i] = _ip_addr[i];
+	}
 }
 
-void read_message(struct message* _message)
+void note_init(
+	struct note* _note,
+	char* _username,
+	char* _sentence,
+	uint8_t _len
+)
 {
-	// read message type to socket
+	_note = (struct note*)malloc(sizeof(struct note));
+
+	strcpy(_note->username, _username);
+	strcpy(_note->sentence, _sentence);
+	_note->length = _len;
+}
+
+void read_message(struct message* _msg, int _sock)
+{
+	read(_sock, &_msg->type, sizeof(uint8_t));
+	printf("\tread message type!\n");
+	read_int(&_msg->port, _sock);
+	printf("\tread port!\n");
+	read_note(&_msg->note, _sock);
+	printf("\tread note!\n");
+
 	// read ip address to socket
-	// read port to socket
-	// read note
+	read(_sock, &_msg->ip_addr[0], sizeof(uint8_t));
+	read(_sock, &_msg->ip_addr[1], sizeof(uint8_t));
+	read(_sock, &_msg->ip_addr[2], sizeof(uint8_t));
+	read(_sock, &_msg->ip_addr[3], sizeof(uint8_t));
 }
 
 void read_note(struct note* _note, int _sock)
 {
-	// read username to socket
-	// read sentence to socket
-	// read length to socket
+	read(_sock, &_note->username, sizeof(char) * 16);
+	read(_sock, &_note->sentence, sizeof(char) * 64);
+	read(_sock, &_note->length, sizeof(uint8_t));
 }
 
-void write_message(struct message* _message)
+void write_message(struct message* _msg, int _sock)
 {
-	// write message type to socket
+	write(_sock, &_msg->type, sizeof(uint8_t));
+	write(_sock, &_msg->port, sizeof(uint8_t));	
+
 	// write ip address to socket
-	// write port to socket
-	// write note
+	write(_sock, &_msg->ip_addr[0], sizeof(uint8_t));
+	write(_sock, &_msg->ip_addr[1], sizeof(uint8_t));
+	write(_sock, &_msg->ip_addr[2], sizeof(uint8_t));
+	write(_sock, &_msg->ip_addr[3], sizeof(uint8_t));
+
+	write_note(&_msg->note, _sock);
 }
 
 void write_note(struct note* _note, int _sock)
 {
-	// write username to socket
-	// write sentence to socket
-	// write length to socket
+	write(_sock, &_note->username, sizeof(char) * 16);
+	write(_sock, &_note->sentence, sizeof(char) * 64);
+	write(_sock, &_note->length, sizeof(uint8_t));
+}
+
+int read_int(int* int_ptr, int _sock)
+{
+    int bytes_read;
+
+    for (int bytes_left = 4; bytes_left > 0; bytes_left -= bytes_read)
+    {
+        bytes_read = read(_sock, int_ptr, sizeof(int));
+
+        if (bytes_read == 4)
+        {
+            break;  // all bytes read in one go
+        }
+        else if (bytes_read == -1)
+        {
+            break;  // problem in network
+        }
+
+        *int_ptr <<= (bytes_left - bytes_read) * 8;
+    }
+
+    return 4;
 }
 
 int command_read(char* input_string)
@@ -113,13 +158,11 @@ int command_read(char* input_string)
 	{
 		command_num = JOIN;
 	}
-
 	// otherwise check for leave command
 	else if (strcmp(command_string, "LEAVE\0") == 0)
 	{
 		command_num = LEAVE;
 	}
-
 	// otherwise check for shutdown command with and with out newline
 	else if (strcmp(command_string, "SHUTDOWN\0") == 0 || 
 			 strcmp(command_string, "SHUTDOWN") == 0)
@@ -140,7 +183,6 @@ int command_read(char* input_string)
 			}
 		}
 	}
-
 	// otherwise assume note
 	else
 	{
