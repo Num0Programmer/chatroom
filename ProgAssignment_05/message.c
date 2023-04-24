@@ -31,7 +31,7 @@ void default_note(struct note* _note)
 void message_init(
 	struct message* _msg,
 	uint8_t _type,
-	uint8_t* _ip_addr,
+	uint8_t _ip_addr[4],
 	int _port,
 	struct note* _note
 )

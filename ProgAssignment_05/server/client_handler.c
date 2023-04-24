@@ -33,12 +33,20 @@ void* client_handler(void* _args)
 			printf("join command\n");
 			pthread_mutex_lock(handler_args->mutex);
 
+			// leave what is necessary, this is mainly for debugging
+			struct note* join_note = NULL;
+			struct message* join_msg = NULL;
+			note_init(join_note, "Server", "You are part of the room now", 28);
+			message_init(join_msg, JOIN, msg->ip_addr, msg->port, join_note);
+
 			struct chat_node* new_client = NULL;
 			chat_node_init(new_client, msg->ip_addr, msg->port);
 			printf("\tconstructed new client node!\n");
 
 			// add new client to list of chat nodes
 			add_chat_node(handler_args->client_list, new_client);
+
+			write_message(join_msg, client_socket);
 
 			// notify chat room of join
 			notify_room(
