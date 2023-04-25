@@ -9,16 +9,17 @@
 void* sender_handler(void* _handler_args)
 {
 	printf("sender handler called here!\n");
+	
 	// extract networking information
 	// initialize networking informaion
 	// networking information
-
-    int sock;
+	
+     int sock;
 	int command = 0;
-    struct sockaddr_in server_addr;
+     struct sockaddr_in server_addr;	
 
 	struct handler_args* handler_args = (struct handler_args*)_handler_args;
-	
+	pthread_mutex_lock(handler_args->mutex);
 	// define message construction variables
 	struct message msg;
 
@@ -30,7 +31,10 @@ void* sender_handler(void* _handler_args)
 	{
 		case JOIN:
 			printf("join command\n");
-			join_server(handler_args);
+			
+			// set connected flag
+			handler_args->connected = TRUE;
+			//join_server(handler_args);
 			break;
 
 		case LEAVE:
@@ -50,11 +54,17 @@ void* sender_handler(void* _handler_args)
 			break;
 	}
 
+	// get server info from properties
+	//join_server(handler_args);
+	load_props(handler_args);
+
 	// copying data in msg struct
 	// Maybe make this into a function?
+	
 	msg.type = command;
 	msg.port = handler_args->port;
-	memcpy(msg.ip_addr, handler_args->ip_addr, sizeof(strlen(handler_args->ip_addr) + 1));
+	memcpy(msg.ip_addr, handler_args->ip_addr, 
+		  sizeof(strlen(handler_args->ip_addr) + 1));
 
 	// filling in socket info
 	sock = socket(AF_INET, SOCK_STREAM, 0);
@@ -63,6 +73,7 @@ void* sender_handler(void* _handler_args)
     server_addr.sin_port = htons(handler_args->dest_port);
 
 	// unlock mutex
+	pthread_mutex_unlock(handler_args->mutex);
 
 	// connect to socket
    if (connect(sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1)
@@ -73,17 +84,33 @@ void* sender_handler(void* _handler_args)
         exit(EXIT_FAILURE);
     }
 
-	 // write to server
-    if(write(sock, &msg, sizeof(msg)) != sizeof(struct message))
-		printf("write error\n");
+	//check for client connected so message is sent
+	if(handler_args->connected == TRUE)
+	{
+		// write to server
+    		if(write(sock, &msg, sizeof(msg)) != sizeof(struct message))
+			printf("write error\n");
+	}
+
+	//otherwise, let client know they are not connected, and how to connect
+	else
+	{
+		printf("Have not yet joined the chat; use JOIN to register\n");
+	}
 
 	// exit function
 	// free message in handler args
 	// close socket
 	close(sock);
-	pthread_exit(NULL);
+
+	//terminate thread if not main thread
+	if(getpid() != gettid())
+		pthread_exit(NULL);
 }
 
+/*
+  Unsure of what to do with this function atm, or if we really need it now
+*/
 void* join_server(void* _handler_args)
 {
 	int cmd_len = 0;
@@ -110,6 +137,7 @@ void* join_server(void* _handler_args)
 	// parsing to get back cmd str, cmd_str won't be used
 	cmd_str = strtok_r(cpy_con_in, " ", &cpy_con_in);
 
+	/*
 	// check for console input being longer then JOIN
 	if (cmd_len > default_join_len)
 	{
@@ -125,7 +153,7 @@ void* join_server(void* _handler_args)
 		// set ip_addr to  handler_args dest_ip_addr, this overwrites the default
 		handler_args->dest_port = atoi(dest_port_str);
 	}
-
+	*/
 	// should set a flag of some sort so the user can't rejoin if they are already joined
 
 	// stub return

@@ -1,5 +1,7 @@
 #include <arpa/inet.h>
 #include <pthread.h>
+#define _GNU_SOURCE //this and unistd.h is here to support gettid for
+#include <unistd.h> //distinguishing main threads from created threads
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/socket.h>
@@ -7,7 +9,6 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <string.h>
-
 
 #include "../chat_node.h"
 #include "../message.h"
@@ -24,7 +25,6 @@
 
 
 
-
 /* structures */
 struct handler_args
 {
@@ -35,6 +35,8 @@ struct handler_args
 	char* props_str;
 	char* dest_ip_addr;
 	int dest_port;
+	int connected; // this is a bool in accordance with TRUE FALSE
+				    // macros defined in main.h
 };
 
 
@@ -44,7 +46,8 @@ void* join_server(void* _handler_args);
 void load_props(struct handler_args* handler_args);
 
 /* preprocessor definitions */
-
+#define FALSE 0
+#define TRUE !FALSE
 
 #endif /* SENDER_HANDLER_H */
 

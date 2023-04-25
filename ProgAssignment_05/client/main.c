@@ -38,6 +38,7 @@ int main(int argc, char** argv)
 	// maybe make into a quick function?
 	handler_args->console_input = client_input;
 	handler_args->mutex = &mutex;
+	handler_args->connected = FALSE;
 	handler_args->props_str = malloc(strlen(props_name) + 1);
 	memcpy(handler_args->props_str, props_name, strlen(props_name) + 1);
 
@@ -67,15 +68,15 @@ int main(int argc, char** argv)
 			perror("Error failure creating thread");
 			exit(EXIT_FAILURE);
 		}
-
+		
 		// check detach sender thread
-		if (pthread_detach(thread) != 0)
+		if (pthread_join(thread, NULL) != 0)
 		{
-			perror("Error detaching thread");
+			perror("Error joining thread");
 			exit(EXIT_FAILURE);
 		}
-
-		pthread_mutex_lock(&mutex);
+		
+		//pthread_mutex_lock(&mutex);
 	}
 
 	pthread_mutex_destroy(&mutex);
