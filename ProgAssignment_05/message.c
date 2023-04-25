@@ -5,6 +5,7 @@
 
 
 /* function implementation */
+/*
 void default_message(struct message* _msg)
 {
 	_msg = (struct message*)malloc(sizeof(struct message));
@@ -13,10 +14,10 @@ void default_message(struct message* _msg)
 	_msg->port = 9999;	// puts port far out of reach of other ports most
 						// likely being used
 
-	for (size_t i = 0; i < 4; i += 1)
-	{
-		_msg->ip_addr[i] = 0;
-	}
+	_msg->ip_addr[0] = 0;
+	_msg->ip_addr[1] = 0;
+	_msg->ip_addr[2] = 0;
+	_msg->ip_addr[3] = 0;
 }
 
 void default_note(struct note* _note)
@@ -36,16 +37,23 @@ void message_init(
 	struct note* _note
 )
 {
+	printf("\tmessage initialization called here!\n");
 	_msg = (struct message*)malloc(sizeof(struct message));
 
 	_msg->type = _type;
+	printf("\tset the message type!\n");
 	_msg->port = _port;
-	_msg->note = *_note;
+	printf("\tset the message port!\n");
+	printf("\tusername: %s\n", _note->username);
+	printf("\tsentence: %s\n", _note->sentence);
+	printf("\tlength: %d\n", _note->length);
+	note_init(&_msg->note, _note->username, _note->sentence, _note->length);
+	printf("\tset the message note!\n");
 
-	for (size_t i = 0; i < 4; i += 1)
-	{
-		_msg->ip_addr[i] = _ip_addr[i];
-	}
+	_msg->ip_addr[0] = _ip_addr[0];
+	_msg->ip_addr[1] = _ip_addr[1];
+	_msg->ip_addr[2] = _ip_addr[2];
+	_msg->ip_addr[3] = _ip_addr[3];
 }
 
 void note_init(
@@ -55,20 +63,29 @@ void note_init(
 	uint8_t _len
 )
 {
+	printf("\t\tnote initialization called here!\n");
 	_note = (struct note*)malloc(sizeof(struct note));
 
 	strcpy(_note->username, _username);
+	printf("\t\tset the note username: %s!\n", _note->username);
 	strcpy(_note->sentence, _sentence);
+	printf("\t\tset the note sentence!\n");
 	_note->length = _len;
+	printf("\t\tset the note length!\n");
 }
+*/
 
 void read_message(struct message* _msg, int _sock)
 {
+	_msg->type = 9;
+	printf("\tread message called here!\n");
 	read(_sock, &_msg->type, sizeof(uint8_t));
 	printf("\tread message type!\n");
+	printf("\tmessage port: ");
+	printf("%d!\n", _msg->port);
 	read_int(&_msg->port, _sock);
 	printf("\tread port!\n");
-	read_note(&_msg->note, _sock);
+	read_note(_msg->note, _sock);
 	printf("\tread note!\n");
 
 	// read ip address to socket
@@ -96,7 +113,7 @@ void write_message(struct message* _msg, int _sock)
 	write(_sock, &_msg->ip_addr[2], sizeof(uint8_t));
 	write(_sock, &_msg->ip_addr[3], sizeof(uint8_t));
 
-	write_note(&_msg->note, _sock);
+	write_note(_msg->note, _sock);
 }
 
 void write_note(struct note* _note, int _sock)

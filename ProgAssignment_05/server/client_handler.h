@@ -8,6 +8,7 @@
 
 #define MSG_SIZE 80
 
+
 /* structures */
 struct handler_args
 {
@@ -18,7 +19,7 @@ struct handler_args
 
 
 /* function prototypes */
-void* client_handler(void* _args);
+void* client_handler(void* _handler_args);
 void notify_room(
 	struct chat_node_list* _list,
 	char username[16],
@@ -27,4 +28,3 @@ void notify_room(
 
 
 /* preprocessor definitions */
-

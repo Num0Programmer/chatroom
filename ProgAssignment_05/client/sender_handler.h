@@ -24,7 +24,6 @@
 #define SENDER_HANDLER_H
 
 
-
 /* structures */
 struct handler_args
 {
@@ -35,8 +34,8 @@ struct handler_args
 	char* props_str;
 	char* dest_ip_addr;
 	int dest_port;
-	int connected; // this is a bool in accordance with TRUE FALSE
-				    // macros defined in main.h
+	int connected;	// this is a bool in accordance with TRUE FALSE macros
+					// defined in main.h
 };
 
 
@@ -50,4 +49,3 @@ void load_props(struct handler_args* handler_args);
 #define TRUE !FALSE
 
 #endif /* SENDER_HANDLER_H */
-

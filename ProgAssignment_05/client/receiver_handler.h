@@ -24,9 +24,13 @@ int read_complete(int _sock, int* int_value_ptr, size_t size);
 
 
 /* preprocessor definitions */
+#define FALSE 0
+#define TRUE !FALSE
+
 #define HOME_ADDR "127.0.0.1"
-#define SERVER_ADDR "142.11.213.134"
+#define SERVER_ADDR "127.0.0.1"
 #define PORT 23657
+#define NUM_CONNECTIONS 20
 
 
 #endif /* RECEIVER_HANDLER_H */

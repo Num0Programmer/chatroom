@@ -24,7 +24,7 @@ int main(int argc, char** argv)
 	// check if a properties file was given
 	if (props_name == NULL)
 	{
-		printf("No properties file given\n");
+		perror("Error no properties file given\n");
 		exit(EXIT_FAILURE);
 	}
 
