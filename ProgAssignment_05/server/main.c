@@ -11,8 +11,9 @@ int main (int argc, char** argv)
 	struct sockaddr_in server_address;	// naming the server's listening socket
 	
 	// list of clients currently in the chatroom
-	struct chat_node_list* my_client_list = NULL;
-	chat_node_list_init(my_client_list);
+	struct chat_node_list* my_client_list = (struct chat_node_list*)malloc(
+		sizeof(struct chat_node_list)
+	);
 
 	// packaged arguements the client_handler() will need
 	struct handler_args* handler_args = (struct handler_args*)malloc(

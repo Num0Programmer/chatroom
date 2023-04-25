@@ -34,8 +34,8 @@ void* sender_handler(void* _handler_args)
 			printf("join command\n");
 			join_server(handler_args);
 			strcpy(msg->note->username, "[default user]");
-			strcpy(msg->note->sentence, "This is a join message!");
-			msg->note->length = 23;
+			strcpy(msg->note->sentence, "Suck my nuts!");
+			msg->note->length = 13;
 			break;
 
 		case LEAVE:
@@ -55,9 +55,6 @@ void* sender_handler(void* _handler_args)
 			break;
 	}
 	printf("past the switch statement!\n");
-	printf("username: %s\n", msg->note->username);
-	printf("sentence: %s\n", msg->note->sentence);
-	printf("length: %d\n", msg->note->length);
 
 	// get server info from properties
 	//join_server(handler_args);
@@ -66,34 +63,29 @@ void* sender_handler(void* _handler_args)
 	// copying data in msg struct
 	// Maybe make this into a function?
 	msg->type = command;
-	printf("set the message type!\n");
 	msg->port = handler_args->port;
-	printf("retrieved port from handler args!\n");
 	//memcpy(msg->ip_addr, handler_args->ip_addr, sizeof(strlen(handler_args->ip_addr) + 1));
+	// TODO: write a parser -> retrieves ip address from console input into the message ip address field
 	msg->ip_addr[0] = ip[0];
 	msg->ip_addr[1] = ip[1];
 	msg->ip_addr[2] = ip[2];
 	msg->ip_addr[3] = ip[3];
-	printf("retrieved ip address from handler args!\n");
 	printf("initialized message!\n");
 
 	// filling in socket info
 	sock = socket(AF_INET, SOCK_STREAM, 0);
     server_addr.sin_family = AF_INET;
     server_addr.sin_addr.s_addr = inet_addr(handler_args->dest_ip_addr);
-	printf("retrieved destination ip address!\n");
     server_addr.sin_port = htons(handler_args->dest_port);
-	printf("retrieved destination port!\n");
 
 	// unlock mutex
 	pthread_mutex_unlock(handler_args->mutex);
 
 	// connect to socket
-   if (connect(sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1)
+	if (connect(sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1)
     {
 		// report socket creation error
         printf("Error: connection unsuccessful!\n");
-		// exit program
         exit(EXIT_FAILURE);
     }
 

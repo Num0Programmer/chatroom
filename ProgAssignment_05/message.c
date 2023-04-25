@@ -77,16 +77,9 @@ void note_init(
 
 void read_message(struct message* _msg, int _sock)
 {
-	_msg->type = 9;
-	printf("\tread message called here!\n");
 	read(_sock, &_msg->type, sizeof(uint8_t));
-	printf("\tread message type!\n");
-	printf("\tmessage port: ");
-	printf("%d!\n", _msg->port);
 	read_int(&_msg->port, _sock);
-	printf("\tread port!\n");
 	read_note(_msg->note, _sock);
-	printf("\tread note!\n");
 
 	// read ip address to socket
 	read(_sock, &_msg->ip_addr[0], sizeof(uint8_t));

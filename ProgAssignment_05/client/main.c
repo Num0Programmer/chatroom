@@ -49,8 +49,10 @@ int main(int argc, char** argv)
 	// start receiver thread - pass networking information
 	pthread_create(&rec_thread, NULL, receiver_handler, NULL);
 
+	// zero out clint_input
+	memset(client_input, 0, MAX_CHARS);
 	// while chatting code is not equal to SHUTDOWN
-	while (strcmp(client_input,"SHUTDOWN\n") != 0)
+	while (strcmp(client_input, "SHUTDOWN\n") != 0)
 	{
 		// zero out clint_input
 		memset(client_input, 0, MAX_CHARS);
@@ -75,8 +77,9 @@ int main(int argc, char** argv)
 			perror("Error joining thread");
 			exit(EXIT_FAILURE);
 		}
-		
-		//pthread_mutex_lock(&mutex);
+
+		printf("mutex is getting locked again!\n");
+		pthread_mutex_lock(&mutex);
 	}
 
 	pthread_mutex_destroy(&mutex);
@@ -85,3 +88,4 @@ int main(int argc, char** argv)
 
 
 /* function implementation */
+
