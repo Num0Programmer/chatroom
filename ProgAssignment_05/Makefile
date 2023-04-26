@@ -1,6 +1,11 @@
 # variables
+<<<<<<< HEAD
 CFLAGS = -Wall -std=gnu99 -pedantic -c -g
 LDFLAGS = -lpthread
+=======
+CFLAGS := -Wall -std=c99 -pedantic -c -g
+LDFLAGS := -lpthread
+>>>>>>> 201e434bb906a49c8f2b64a038c08f5417f9e92f
 
 # remove all
 RM_ALL := rm -rf ./.DS_Store *.dSYM ./*.o ./server/*.o ./client/*.o ./auxiliary/*.o chat_server chat_client

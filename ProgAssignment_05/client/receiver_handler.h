@@ -18,15 +18,18 @@
 
 
 /* function prototypes */
-void* receiver_handler(void* _);
+void* receiver_handler(void* rec_port);
 void* handle_conn(void* _sock);
 int read_complete(int _sock, int* int_value_ptr, size_t size);
 
 
 /* preprocessor definitions */
+#define FALSE 0
+#define TRUE !FALSE
+
 #define HOME_ADDR "127.0.0.1"
-#define SERVER_ADDR "142.11.213.134"
 #define PORT 23657
+#define NUM_CONNECTIONS 20
 
 
 #endif /* RECEIVER_HANDLER_H */

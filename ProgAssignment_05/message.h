@@ -1,3 +1,4 @@
+#include <arpa/inet.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,9 +21,9 @@ struct note
 struct message
 {
 	uint8_t type;
-	uint8_t ip_addr[4];
+	char* ip_addr;
 	int port;
-	struct note note;
+	struct note* note;
 };
 
 
@@ -38,30 +39,13 @@ enum types
 
 
 /* function prototypes */
-void default_message(struct message* _msg);
-void default_note(struct note* _note);
-
-void message_init(
-	struct message* _msg,
-	uint8_t _type,
-	uint8_t _ip_addr[4],
-	int _port,
-	struct note* _note
-);
-
-void note_init(
-	struct note* _note,
-	char* _username,
-	char* _sentence,
-	uint8_t _len
-);
-
+int command_read(char* input_string);
+void print_note(struct note* _note);
+int read_int(int* int_ptr, int _sock);
 void read_message(struct message* _msg, int _sock);
 void read_note(struct note* _note, int _sock);
 void write_message(struct message* _msg, int _sock);
 void write_note(struct note* _note, int _sock);
-int read_int(int* int_ptr, int _sock);
-int command_read(char* input_string);
 
 
 /* preprocessor definitions */

@@ -2,14 +2,19 @@
 
 
 /* function implementation */
-void* client_handler(void* _args)
+void* client_handler(void* _handler_args)
 {
 	printf("client handler called here!\n");
-	// define message construction variables
-	struct message* msg = NULL;
+	// allocate memory for incoming message
+	struct message* rec_msg = (struct message*)malloc(sizeof(struct message*));
+	rec_msg->ip_addr = (char*)malloc(sizeof(char) * 15);
+	rec_msg->note = (struct note*)malloc(sizeof(struct note));
+	// allocate memory for out going message
+	struct message* send_msg = (struct message*)malloc(sizeof(struct message*));
+	send_msg->note = (struct note*)malloc(sizeof(struct note));
 
 	// extract passed arguments
-	struct handler_args* handler_args = (struct handler_args*)_args;
+	struct handler_args* handler_args = (struct handler_args*)_handler_args;
 
 	// giving client_socket it's own variable
 	int client_socket = *((int*)&handler_args->sock);
@@ -18,94 +23,60 @@ void* client_handler(void* _args)
 	pthread_mutex_unlock(handler_args->mutex);
 
 	// read a message from the socket
-	default_message(msg);
-	default_note(&msg->note);
-	read_message(msg, client_socket);
-	printf("read the message:\n");
-	printf("type: %d\n", msg->type);
-	printf("port: %d\n", msg->port);
-	printf("length: %d\n", msg->note.length);
+	read_message(rec_msg, client_socket);
 	
 	// switch based on message type
-	switch (msg->type)
+	switch (rec_msg->type)
 	{
 		case JOIN:
 			printf("join command\n");
-			pthread_mutex_lock(handler_args->mutex);
+			// set message information
+			send_msg->type = JOIN;
+			send_msg->port = client_socket;
 
-			// leave what is necessary, this is mainly for debugging
-			struct note* join_note = NULL;
-			struct message* join_msg = NULL;
-			note_init(join_note, "Server", "You are part of the room now", 28);
-			message_init(join_msg, JOIN, msg->ip_addr, msg->port, join_note);
+			send_msg->ip_addr = (char*)malloc(strlen(rec_msg->ip_addr) + 1);
+			strcpy(send_msg->ip_addr, rec_msg->ip_addr);
 
-			struct chat_node* new_client = NULL;
-			chat_node_init(new_client, msg->ip_addr, msg->port);
-			printf("\tconstructed new client node!\n");
+			// set note information
+			strcpy(send_msg->note->username, "[server]");
+			strcpy(send_msg->note->sentence, "This is a join message!");
+			send_msg->note->length = 23;
+
+			struct chat_node* new_client = (struct chat_node*)malloc(sizeof(struct chat_node));
+			new_client->port = rec_msg->port;
+
+			new_client->ip_addr = (char*)malloc(strlen(rec_msg->ip_addr) + 1);
+			strcpy(new_client->ip_addr, rec_msg->ip_addr);
+
+			new_client->next_node = NULL;
+			printf("Client with IP: %s\n", new_client->ip_addr);
+			printf("Port: %d\n", new_client->port);
+			printf("Was added!\n");
 
 			// add new client to list of chat nodes
 			add_chat_node(handler_args->client_list, new_client);
-
-			write_message(join_msg, client_socket);
-
-			// notify chat room of join
-			notify_room(
-				handler_args->client_list, msg->note.username, "joined"
-			);
-
-			pthread_mutex_unlock(handler_args->mutex);
 			break;
 
 		case LEAVE:
 			printf("leave command\n");
-			pthread_mutex_lock(handler_args->mutex);
-			
-			// remove client from list of chat nodes
-			remove_chat_node(handler_args->client_list, msg->ip_addr);
-
-			// notify chat room of leave
-			notify_room(handler_args->client_list, msg->note.username, "left");
-
-			pthread_mutex_unlock(handler_args->mutex);
 			break;
 
 		case SHUTDOWN:
 			printf("shutdown command\n");
-			pthread_mutex_lock(handler_args->mutex);
-
-			// remove client from list of chat nodes
-			remove_chat_node(handler_args->client_list, msg->ip_addr);
-
-			// notify chat room of leave
-			notify_room(handler_args->client_list, msg->note.username, "left");
-
-			pthread_mutex_unlock(handler_args->mutex);
 			break;
 
 		case SHUTDOWN_ALL:
 			printf("shutdown all command\n");
-			pthread_mutex_lock(handler_args->mutex);
-
-			struct message* shutdown_msg = NULL;
-			default_message(msg);	// change with message_init()
-
-			// send leave message to all chat nodes
-			write_to_chat_node_list(handler_args->client_list, shutdown_msg);
-
-			destroy_chat_node_list(handler_args->client_list);
-
-			pthread_mutex_unlock(handler_args->mutex);
 			break;
 
 		default:
 			printf("assumed note command\n");
-			struct message* note_msg = NULL;
-			default_message(note_msg);
-
-			// send note message to all chat nodes
-			write_to_chat_node_list(handler_args->client_list, note_msg);
 			break;
 	}
+
+	printf("\t\tsending message to room...\n");
+	send_msg_to_room(handler_args->client_list, send_msg);
+	printf("\t\troom now has message!\n");
 
 	// exit function
 	close(client_socket);
@@ -113,12 +84,18 @@ void* client_handler(void* _args)
 }
 
 
-void notify_room(
-	struct chat_node_list* _list,
-	char username[16],
-	char* msg_type
-)
+void send_msg_to_room(struct chat_node_list* _list, struct message* _msg)
 {
-	printf("%s has %s the room!\n", username, msg_type);
+	struct chat_node* wrk_node = _list->head;
+
+	while (wrk_node != NULL)
+	{
+		printf("\t\t\tWriting message to:\n");
+		printf("\t\t\tIP: %s\n", wrk_node->ip_addr);
+		printf("\t\t\tPort: %d\n", wrk_node->port);
+		write_message(_msg, wrk_node->port);
+		printf("\t\t\tmessage on to client!\n");
+		wrk_node = wrk_node->next_node;
+	}
 }
 

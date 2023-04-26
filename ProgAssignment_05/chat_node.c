@@ -31,7 +31,7 @@ void add_chat_node(struct chat_node_list* _list, struct chat_node* _node)
 	_list->size += 1;
 }
 
-void chat_node_init(struct chat_node* _node, uint8_t _ip_addr[4], int _port)
+void chat_node_init(struct chat_node* _node, char* _ip_addr, int _port)
 {
 	_node = (struct chat_node*)malloc(sizeof(struct chat_node));
 
@@ -71,18 +71,11 @@ void destroy_chat_node_list(struct chat_node_list* _list)
 	free(_list);
 }
 
-void remove_chat_node(struct chat_node_list* _list, uint8_t _ip_addr[4])
+void remove_chat_node(struct chat_node_list* _list, char* _ip_addr)
 {
 	struct chat_node* remove_node = _list->head;
 
-	if (_list->head != NULL
-		&& (
-			remove_node->ip_addr[0] == _ip_addr[0]
-			&& remove_node->ip_addr[1] == _ip_addr[1]
-			&& remove_node->ip_addr[2] == _ip_addr[2]
-			&& remove_node->ip_addr[3] == _ip_addr[3]
-		)
-	)
+	if (_list->head != NULL && strcmp(remove_node->ip_addr, _ip_addr) == 0)
 	{
 		_list->head = _list->head->next_node;
 		free(remove_node);
@@ -97,12 +90,7 @@ void remove_chat_node(struct chat_node_list* _list, uint8_t _ip_addr[4])
 		while (wrk_node->next_node != NULL)
 		{
 			// check next node's ip address equal to expected ip address
-			if (
-				wrk_node->next_node->ip_addr[0] == _ip_addr[0]
-				&& wrk_node->next_node->ip_addr[1] == _ip_addr[1]
-				&& wrk_node->next_node->ip_addr[2] == _ip_addr[2]
-				&& wrk_node->next_node->ip_addr[3] == _ip_addr[3]
-			)
+			if (strcmp(wrk_node->next_node->ip_addr, _ip_addr) == 0)
 			{
 				remove_node = wrk_node->next_node;
 				break;	// node to remove is found
@@ -117,18 +105,6 @@ void remove_chat_node(struct chat_node_list* _list, uint8_t _ip_addr[4])
 			free(remove_node);
 			_list->size -= 1;
 		}
-	}
-}
-
-void write_to_chat_node_list(struct chat_node_list* _list, struct message* _msg)
-{
-	struct chat_node* wrk_node = _list->head;
-
-	while (wrk_node != NULL)
-	{
-		write_message(_msg, wrk_node->port);
-
-		wrk_node = wrk_node->next_node;
 	}
 }
 

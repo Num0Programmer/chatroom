@@ -11,6 +11,7 @@ int main(int argc, char** argv)
 {
 	// define thread information
 	pthread_t rec_thread;
+	pthread_t send_thread;
 	pthread_mutex_init(&mutex, NULL);
 	// define funciton handler arguments
 	struct handler_args* handler_args = (struct handler_args*)malloc(
@@ -24,7 +25,7 @@ int main(int argc, char** argv)
 	// check if a properties file was given
 	if (props_name == NULL)
 	{
-		printf("No properties file given\n");
+		perror("Error no properties file");
 		exit(EXIT_FAILURE);
 	}
 
@@ -43,14 +44,25 @@ int main(int argc, char** argv)
 	memcpy(handler_args->props_str, props_name, strlen(props_name) + 1);
 
 	// start sender - pass networking information
-	sender_handler((void*)handler_args);	// assuming unlocking a locked
-											// mutex doesn't messup anything
+	if (pthread_create(&send_thread, NULL, sender_handler, (void*)handler_args) != 0)
+	{
+		perror("Error failure creating thread");
+		exit(EXIT_FAILURE);
+	}
+
+	if (pthread_join(send_thread, NULL) != 0)
+	{
+		perror("Error joining thread");
+		exit(EXIT_FAILURE);
+	}
 
 	// start receiver thread - pass networking information
-	pthread_create(&rec_thread, NULL, receiver_handler, NULL);
+	pthread_create(&rec_thread, NULL, receiver_handler, (void*)&handler_args->port);
 
+	// zero out clint_input
+	memset(client_input, 0, MAX_CHARS);
 	// while chatting code is not equal to SHUTDOWN
-	while (strcmp(client_input,"SHUTDOWN\n") != 0)
+	while (strcmp(client_input, "SHUTDOWN\n") != 0)
 	{
 		// zero out clint_input
 		memset(client_input, 0, MAX_CHARS);
@@ -62,21 +74,20 @@ int main(int argc, char** argv)
 		memcpy(handler_args->console_input, client_input, MAX_CHARS);
 
 		// start sender thread - hand message to send
-		pthread_t thread;
-		if (pthread_create(&thread, NULL, sender_handler, (void*)handler_args) != 0)
+		if (pthread_create(&send_thread, NULL, sender_handler, (void*)handler_args) != 0)
 		{
 			perror("Error failure creating thread");
 			exit(EXIT_FAILURE);
 		}
 		
 		// check detach sender thread
-		if (pthread_join(thread, NULL) != 0)
+		if (pthread_join(send_thread, NULL) != 0)
 		{
 			perror("Error joining thread");
 			exit(EXIT_FAILURE);
 		}
-		
-		//pthread_mutex_lock(&mutex);
+
+		pthread_mutex_lock(&mutex);
 	}
 
 	pthread_mutex_destroy(&mutex);
@@ -85,3 +96,4 @@ int main(int argc, char** argv)
 
 
 /* function implementation */
+

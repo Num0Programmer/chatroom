@@ -15,14 +15,14 @@
 #include "../auxiliary/properties.h"
 
 
-#define MSG_SIZE 80
-
-#define LOCAL_SERVER_ADDR "127.0.0.1"
-#define LOCAL_SERVER_PORT 23657
-
 #ifndef SENDER_HANDLER_H
 #define SENDER_HANDLER_H
 
+#define MSG_SIZE 80
+
+#define SERVER_ADDR "142.11.213.134"
+#define LOCAL_SERVER_ADDR "127.0.0.1"
+#define LOCAL_SERVER_PORT 23657
 
 
 /* structures */
@@ -35,19 +35,18 @@ struct handler_args
 	char* props_str;
 	char* dest_ip_addr;
 	int dest_port;
-	int connected; // this is a bool in accordance with TRUE FALSE
-				    // macros defined in main.h
+	int connected;	// this is a bool in accordance with TRUE FALSE macros
+					// defined in main.h
 };
 
 
 /* function prototypes */
 void* sender_handler(void* _handler_args);
 void* join_server(void* _handler_args);
-void load_props(struct handler_args* handler_args);
+void load_props(struct handler_args* _handler_args);
 
 /* preprocessor definitions */
 #define FALSE 0
 #define TRUE !FALSE
 
 #endif /* SENDER_HANDLER_H */
-

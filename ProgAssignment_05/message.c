@@ -5,130 +5,6 @@
 
 
 /* function implementation */
-void default_message(struct message* _msg)
-{
-	_msg = (struct message*)malloc(sizeof(struct message));
-
-	_msg->type = NOTE;
-	_msg->port = 9999;	// puts port far out of reach of other ports most
-						// likely being used
-
-	for (size_t i = 0; i < 4; i += 1)
-	{
-		_msg->ip_addr[i] = 0;
-	}
-}
-
-void default_note(struct note* _note)
-{
-	_note = (struct note*)malloc(sizeof(struct note));
-
-	memset(_note->username, 0, 16);
-	memset(_note->sentence, 0, 64);
-	_note->length = 0;
-}
-
-void message_init(
-	struct message* _msg,
-	uint8_t _type,
-	uint8_t _ip_addr[4],
-	int _port,
-	struct note* _note
-)
-{
-	_msg = (struct message*)malloc(sizeof(struct message));
-
-	_msg->type = _type;
-	_msg->port = _port;
-	_msg->note = *_note;
-
-	for (size_t i = 0; i < 4; i += 1)
-	{
-		_msg->ip_addr[i] = _ip_addr[i];
-	}
-}
-
-void note_init(
-	struct note* _note,
-	char* _username,
-	char* _sentence,
-	uint8_t _len
-)
-{
-	_note = (struct note*)malloc(sizeof(struct note));
-
-	strcpy(_note->username, _username);
-	strcpy(_note->sentence, _sentence);
-	_note->length = _len;
-}
-
-void read_message(struct message* _msg, int _sock)
-{
-	read(_sock, &_msg->type, sizeof(uint8_t));
-	printf("\tread message type!\n");
-	read_int(&_msg->port, _sock);
-	printf("\tread port!\n");
-	read_note(&_msg->note, _sock);
-	printf("\tread note!\n");
-
-	// read ip address to socket
-	read(_sock, &_msg->ip_addr[0], sizeof(uint8_t));
-	read(_sock, &_msg->ip_addr[1], sizeof(uint8_t));
-	read(_sock, &_msg->ip_addr[2], sizeof(uint8_t));
-	read(_sock, &_msg->ip_addr[3], sizeof(uint8_t));
-}
-
-void read_note(struct note* _note, int _sock)
-{
-	read(_sock, &_note->username, sizeof(char) * 16);
-	read(_sock, &_note->sentence, sizeof(char) * 64);
-	read(_sock, &_note->length, sizeof(uint8_t));
-}
-
-void write_message(struct message* _msg, int _sock)
-{
-	write(_sock, &_msg->type, sizeof(uint8_t));
-	write(_sock, &_msg->port, sizeof(uint8_t));	
-
-	// write ip address to socket
-	write(_sock, &_msg->ip_addr[0], sizeof(uint8_t));
-	write(_sock, &_msg->ip_addr[1], sizeof(uint8_t));
-	write(_sock, &_msg->ip_addr[2], sizeof(uint8_t));
-	write(_sock, &_msg->ip_addr[3], sizeof(uint8_t));
-
-	write_note(&_msg->note, _sock);
-}
-
-void write_note(struct note* _note, int _sock)
-{
-	write(_sock, &_note->username, sizeof(char) * 16);
-	write(_sock, &_note->sentence, sizeof(char) * 64);
-	write(_sock, &_note->length, sizeof(uint8_t));
-}
-
-int read_int(int* int_ptr, int _sock)
-{
-    int bytes_read;
-
-    for (int bytes_left = 4; bytes_left > 0; bytes_left -= bytes_read)
-    {
-        bytes_read = read(_sock, int_ptr, sizeof(int));
-
-        if (bytes_read == 4)
-        {
-            break;  // all bytes read in one go
-        }
-        else if (bytes_read == -1)
-        {
-            break;  // problem in network
-        }
-
-        *int_ptr <<= (bytes_left - bytes_read) * 8;
-    }
-
-    return 4;
-}
-
 int command_read(char* input_string)
 {
 	char *cpy_in_str = NULL;
@@ -191,5 +67,63 @@ int command_read(char* input_string)
 	
 	// return the number associated with the enum command
 	return command_num;
+}
+
+void print_note(struct note* _note)
+{
+	printf("%s: %s\n", _note->username, _note->sentence);
+}
+
+int read_int(int* int_ptr, int _sock)
+{
+    int bytes_read;
+
+    for (int bytes_left = 4; bytes_left > 0; bytes_left -= bytes_read)
+    {
+        bytes_read = read(_sock, int_ptr, sizeof(int));
+
+        if (bytes_read == 4)
+        {
+            break;  // all bytes read in one go
+        }
+        else if (bytes_read == -1)
+        {
+            break;  // problem in network
+        }
+
+        *int_ptr <<= (bytes_left - bytes_read) * 8;
+    }
+
+    return 4;
+}
+
+void read_message(struct message* _msg, int _sock)
+{
+	read(_sock, &_msg->type, sizeof(uint8_t));
+	read_int(&_msg->port, _sock);
+	read(_sock, _msg->ip_addr, sizeof(char) * 15);
+	read_note(_msg->note, _sock);
+}
+
+void read_note(struct note* _note, int _sock)
+{
+	read(_sock, &_note->username, sizeof(char) * 16);
+	read(_sock, &_note->sentence, sizeof(char) * 64);
+	read(_sock, &_note->length, sizeof(uint8_t));
+}
+
+void write_message(struct message* _msg, int _sock)
+{
+	write(_sock, &_msg->type, sizeof(uint8_t));
+	write(_sock, &_msg->port, sizeof(int));	
+	write(_sock, _msg->ip_addr, sizeof(char) * 15);
+	write_note(_msg->note, _sock);
+}
+
+void write_note(struct note* _note, int _sock)
+{
+	write(_sock, &_note->username, sizeof(char) * 16);
+	write(_sock, &_note->sentence, sizeof(char) * 64);
+	write(_sock, &_note->length, sizeof(uint8_t));
 }
 

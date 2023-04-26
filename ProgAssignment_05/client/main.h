@@ -30,6 +30,8 @@ void load_props(struct handler_args* handler_args);
 /* preprocessor definitions */
 #define FALSE 0
 #define TRUE !FALSE
+
 #define MAX_CHARS 80
+
 #define DEFAULT_IP "127.0.0.1"
 #define DEFAULT_PORT 23657
