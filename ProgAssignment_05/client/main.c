@@ -50,14 +50,14 @@ int main(int argc, char** argv)
 		exit(EXIT_FAILURE);
 	}
 
-	// start receiver thread - pass networking information
-	pthread_create(&rec_thread, NULL, receiver_handler, NULL);
-
 	if (pthread_join(send_thread, NULL) != 0)
 	{
 		perror("Error joining thread");
 		exit(EXIT_FAILURE);
 	}
+
+	// start receiver thread - pass networking information
+	pthread_create(&rec_thread, NULL, receiver_handler, (void*)&handler_args->port);
 
 	// zero out clint_input
 	memset(client_input, 0, MAX_CHARS);

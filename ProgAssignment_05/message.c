@@ -8,44 +8,52 @@
 void read_message(struct message* _msg, int _sock)
 {
 	read(_sock, &_msg->type, sizeof(uint8_t));
+	// read port, honoring byte order
 	read_int(&_msg->port, _sock);
-	read_note(_msg->note, _sock);
+	//_msg->port = ntohl(_msg->port);
 
-	// honor byte order
-	_msg->ip_addr[0] = htonl(_msg->ip_addr[0]);
-	_msg->ip_addr[1] = htonl(_msg->ip_addr[1]);
-	_msg->ip_addr[2] = htonl(_msg->ip_addr[2]);
-	_msg->ip_addr[3] = htonl(_msg->ip_addr[3]);
-	// read ip address to socket
+	// read ip address from socket
 	read(_sock, &_msg->ip_addr[0], sizeof(uint8_t));
 	read(_sock, &_msg->ip_addr[1], sizeof(uint8_t));
 	read(_sock, &_msg->ip_addr[2], sizeof(uint8_t));
 	read(_sock, &_msg->ip_addr[3], sizeof(uint8_t));
+	// honor byte order
+	/*
+	_msg->ip_addr[0] = ntohl(_msg->ip_addr[0]);
+	_msg->ip_addr[1] = ntohl(_msg->ip_addr[1]);
+	_msg->ip_addr[2] = ntohl(_msg->ip_addr[2]);
+	_msg->ip_addr[3] = ntohl(_msg->ip_addr[3]);
+	*/
+
+	read_note(_msg->note, _sock);
 }
 
 void read_note(struct note* _note, int _sock)
 {
 	read(_sock, &_note->username, sizeof(char) * 16);
 	read(_sock, &_note->sentence, sizeof(char) * 64);
-	_note->length = htonl(_note->length);
 	read(_sock, &_note->length, sizeof(uint8_t));
+	//_note->length = ntohl(_note->length);
 }
 
 void write_message(struct message* _msg, int _sock)
 {
 	write(_sock, &_msg->type, sizeof(uint8_t));
-	write(_sock, &_msg->port, sizeof(uint8_t));	
 
-	// write ip address to socket
+	// honoring network byte order
+	/*
+	_msg->port = htonl(_msg->port);
+	_msg->ip_addr[0] = htonl(_msg->ip_addr[0]);
+	_msg->ip_addr[1] = htonl(_msg->ip_addr[1]);
+	_msg->ip_addr[2] = htonl(_msg->ip_addr[2]);
+	_msg->ip_addr[3] = htonl(_msg->ip_addr[3]);
+	*/
+	// write port and ip address to socket
+	write(_sock, &_msg->port, sizeof(uint8_t));	
 	write(_sock, &_msg->ip_addr[0], sizeof(uint8_t));
 	write(_sock, &_msg->ip_addr[1], sizeof(uint8_t));
 	write(_sock, &_msg->ip_addr[2], sizeof(uint8_t));
 	write(_sock, &_msg->ip_addr[3], sizeof(uint8_t));
-	// honoring network byte order
-	_msg->ip_addr[0] = ntohl(_msg->ip_addr[0]);
-	_msg->ip_addr[1] = ntohl(_msg->ip_addr[1]);
-	_msg->ip_addr[2] = ntohl(_msg->ip_addr[2]);
-	_msg->ip_addr[3] = ntohl(_msg->ip_addr[3]);
 
 	write_note(_msg->note, _sock);
 }
@@ -54,8 +62,9 @@ void write_note(struct note* _note, int _sock)
 {
 	write(_sock, &_note->username, sizeof(char) * 16);
 	write(_sock, &_note->sentence, sizeof(char) * 64);
+	// honor network byte order and write sentence length
+	//_note->length = htonl(_note->length);
 	write(_sock, &_note->length, sizeof(uint8_t));
-	_note->length = ntohl(_note->length);
 }
 
 int read_int(int* int_ptr, int _sock)

@@ -26,8 +26,8 @@ void* sender_handler(void* _handler_args)
 		case JOIN:
 			join_server(handler_args);
 			strcpy(msg->note->username, "[default user]");
-			strcpy(msg->note->sentence, "Hello to the server!\n");
-			msg->note->length = htonl(13);
+			strcpy(msg->note->sentence, "Hello to the server!");
+			msg->note->length = (uint8_t)htonl(13);
 			break;
 
 		case LEAVE:
@@ -58,6 +58,7 @@ void* sender_handler(void* _handler_args)
 		&msg->ip_addr[2],
 		&msg->ip_addr[3]
 	);
+	printf("message port: %d\n", msg->port);
 
 	// filling in socket info
 	sock = socket(AF_INET, SOCK_STREAM, 0);
@@ -80,7 +81,6 @@ void* sender_handler(void* _handler_args)
 	write_message(msg, sock);
 
 	// exit function
-	// free message in handler args
 	close(sock);
 
 	//terminate thread if not main thread
@@ -88,7 +88,7 @@ void* sender_handler(void* _handler_args)
 }
 
 /*
-  Unsure of what to do with this function atm, or if we really need it now
+Unsure of what to do with this function atm, or if we really need it now
 */
 void* join_server(void* _handler_args)
 {

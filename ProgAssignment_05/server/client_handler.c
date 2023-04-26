@@ -20,7 +20,14 @@ void* client_handler(void* _handler_args)
 
 	// read a message from the socket
 	read_message(msg, client_socket);
-	printf("%s: %s\n", msg->note->username, msg->note->sentence);
+	printf("Message from IP: %hhu.%hhu.%hhu.%hhu\n",
+		msg->ip_addr[0],
+		msg->ip_addr[1],
+		msg->ip_addr[2],
+		msg->ip_addr[3]
+	);
+	printf("On port: %d\n", msg->port);
+	printf("Message from client\n%s: %s\n", msg->note->username, msg->note->sentence);
 	
 	// switch based on message type
 	switch (msg->type)
@@ -46,10 +53,11 @@ void* client_handler(void* _handler_args)
 			strcpy(join_msg->note->sentence, "This is a join message!");
 			join_msg->note->length = 23;
 
-			struct chat_node* new_client = (struct chat_note*)malloc(sizeof(struct chat_node));
+			struct chat_node* new_client = (struct chat_node*)malloc(sizeof(struct chat_node));
 			new_client->port = msg->port;
 			new_client->next_node = NULL;
 
+			printf("new client port: %d\n", new_client->port);
 			new_client->ip_addr[0] = msg->ip_addr[0];
 			new_client->ip_addr[1] = msg->ip_addr[1];
 			new_client->ip_addr[2] = msg->ip_addr[2];
@@ -57,16 +65,6 @@ void* client_handler(void* _handler_args)
 
 			// add new client to list of chat nodes
 			add_chat_node(handler_args->client_list, new_client);
-
-			printf(
-				"\t\twriting join message to %hhu.%hhu.%hhu.%hhu...\n",
-				msg->ip_addr[0],
-				msg->ip_addr[1],
-				msg->ip_addr[2],
-				msg->ip_addr[3]
-			);
-			write_message(join_msg, client_socket);
-			printf("\t\tmessage is off to the client!\n");
 
 			// notify chat room of join
 			printf("\t\tnotifying room...\n");
@@ -192,7 +190,7 @@ void* client_handler(void* _handler_args)
 			note_msg->ip_addr[3] = msg->ip_addr[3];
 
 			// set note information
-			strcpy(note_msg->note->username, "[default user]");
+			strcpy(note_msg->note->username, "[server]");
 			strcpy(note_msg->note->sentence, "This is a note message!");
 			note_msg->note->length = 22;
 
@@ -214,11 +212,12 @@ void notify_room(struct chat_node_list* _list, struct message* _msg)
 	while (wrk_node != NULL)
 	{
 		printf(
-			"\t\t\twritting message to client at IP %hhu.%hhu.%hhu.%hhu ...\n",
+			"\t\t\twritting message to client at IP %hhu.%hhu.%hhu.%hhu ...\non port %d\n",
 			_msg->ip_addr[0],
 			_msg->ip_addr[1],
 			_msg->ip_addr[2],
-			_msg->ip_addr[3]
+			_msg->ip_addr[3],
+			wrk_node->port
 		);
 		write_message(_msg, wrk_node->port);
 		printf("\t\t\tmessage is off to client!\n");

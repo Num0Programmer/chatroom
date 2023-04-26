@@ -6,7 +6,7 @@ pthread_mutex_t mutex;
 
 
 /* function implementation */
-void* receiver_handler(void* _)
+void* receiver_handler(void* rec_port)
 {
 	//printf("\treceiver handler called here!\n");
 	// define networking information
@@ -28,7 +28,7 @@ void* receiver_handler(void* _)
 	rec_address.sin_family = AF_INET;	// define IP family
 	// accept server connection
 	rec_address.sin_addr.s_addr = htonl(INADDR_ANY);
-	rec_address.sin_port = htons(PORT);	// port to listen on
+	rec_address.sin_port = htons(*((int*)rec_port));	// port to listen on
 	
 	if (bind(
 			rec_socket,
