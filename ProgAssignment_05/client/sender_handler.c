@@ -14,7 +14,6 @@ void* sender_handler(void* _handler_args)
     struct sockaddr_in server_addr;
 	
 	// define message construction variables
-	uint8_t ip[4] = {127, 0, 0, 1};
 	struct message* msg = (struct message*)malloc(sizeof(struct message));
 	msg->note = (struct note*)malloc(sizeof(struct note));
 
@@ -27,8 +26,8 @@ void* sender_handler(void* _handler_args)
 		case JOIN:
 			join_server(handler_args);
 			strcpy(msg->note->username, "[default user]");
-			strcpy(msg->note->sentence, "Suck my nuts!");
-			msg->note->length = 13;
+			strcpy(msg->note->sentence, "Hello to the server!\n");
+			msg->note->length = htonl(13);
 			break;
 
 		case LEAVE:
@@ -47,9 +46,6 @@ void* sender_handler(void* _handler_args)
 			printf("assumed note command\n");
 			break;
 	}
-
-	// get server info from properties
-	//load_props(handler_args);
 
 	// copying data in msg struct
 	// Maybe make this into a function?
@@ -76,7 +72,7 @@ void* sender_handler(void* _handler_args)
 	if (connect(sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1)
     {
 		// report socket creation error
-        printf("Error: connection unsuccessful!\n");
+        printf("Error connection unsuccessful");
         exit(EXIT_FAILURE);
     }
 

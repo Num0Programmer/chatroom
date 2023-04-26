@@ -8,7 +8,7 @@ pthread_mutex_t mutex;
 /* function implementation */
 void* receiver_handler(void* _)
 {
-	printf("\treceiver handler called here!\n");
+	//printf("\treceiver handler called here!\n");
 	// define networking information
 	int rec_socket;	// descriptor of reciever's socket
 	struct sockaddr_in rec_address;	// nameing the reciever's listening socket

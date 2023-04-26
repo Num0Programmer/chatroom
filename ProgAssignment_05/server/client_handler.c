@@ -58,7 +58,13 @@ void* client_handler(void* _handler_args)
 			// add new client to list of chat nodes
 			add_chat_node(handler_args->client_list, new_client);
 
-			printf("\t\twriting join message to client...\n");
+			printf(
+				"\t\twriting join message to %hhu.%hhu.%hhu.%hhu...\n",
+				msg->ip_addr[0],
+				msg->ip_addr[1],
+				msg->ip_addr[2],
+				msg->ip_addr[3]
+			);
 			write_message(join_msg, client_socket);
 			printf("\t\tmessage is off to the client!\n");
 
@@ -208,7 +214,7 @@ void notify_room(struct chat_node_list* _list, struct message* _msg)
 	while (wrk_node != NULL)
 	{
 		printf(
-			"\t\t\twritting message to client at IP %d.%d.%d.%d ...\n",
+			"\t\t\twritting message to client at IP %hhu.%hhu.%hhu.%hhu ...\n",
 			_msg->ip_addr[0],
 			_msg->ip_addr[1],
 			_msg->ip_addr[2],
