@@ -27,6 +27,7 @@ void* client_handler(void* _handler_args)
 	{
 		case JOIN:
 			printf("join command\n");
+			//pthread_mutex_lock(handler_args->mutex);
 			// leave what is necessary, this is mainly for debugging
 			struct message* join_msg = (struct message*)malloc(sizeof(struct message));
 			join_msg->note = (struct note*)malloc(sizeof(struct note));
@@ -65,6 +66,7 @@ void* client_handler(void* _handler_args)
 			printf("\t\tnotifying room...\n");
 			notify_room(handler_args->client_list, join_msg);
 			printf("\t\troom alerted to new chatter!\n");
+			//pthread_mutex_unlock(handler_args->mutex);
 			break;
 
 		case LEAVE:

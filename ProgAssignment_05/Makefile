@@ -1,5 +1,5 @@
 # variables
-CFLAGS := -Wall -pedantic -c -g
+CFLAGS := -Wall -std=c99 -pedantic -c -g
 LDFLAGS := -lpthread
 
 # remove all

@@ -28,7 +28,6 @@ int read_complete(int _sock, int* int_value_ptr, size_t size);
 #define TRUE !FALSE
 
 #define HOME_ADDR "127.0.0.1"
-#define SERVER_ADDR "127.0.0.1"
 #define PORT 23657
 #define NUM_CONNECTIONS 20
 

@@ -8,7 +8,7 @@ pthread_mutex_t mutex;
 /* function implementation */
 void* receiver_handler(void* _)
 {
-	printf("receiver handler called here!\n");
+	printf("\treceiver handler called here!\n");
 	// define networking information
 	int rec_socket;	// descriptor of reciever's socket
 	struct sockaddr_in rec_address;	// nameing the reciever's listening socket
@@ -84,7 +84,7 @@ void* receiver_handler(void* _)
 
 void* handle_conn(void* _sock)
 {
-	printf("handle conn called here!\n");
+	printf("\t\thandle conn called here!\n");
 	// copy conn socket
 	int conn_socket = *((int*)_sock);
 	// default message structure
@@ -94,13 +94,14 @@ void* handle_conn(void* _sock)
 	// unlock mutex
 	pthread_mutex_unlock(&mutex);
 
-	// read message
+	printf("\t\treading message from socket...\n");
 	read_message(msg, conn_socket);
+	printf("\t\tsuccessfully read message from the socket!\n");
 	
 	switch(msg->type)
 	{
 		case JOIN:
-			// print joining log
+			printf("\t\tmessage was a JOIN message!\n");
 			break;
 
 		case LEAVE:
