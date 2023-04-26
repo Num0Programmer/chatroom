@@ -6,7 +6,9 @@
 #include "../chat_node.h"
 #include "../message.h"
 
-#define MSG_SIZE 80
+
+#ifndef CLIENT_HANDLER_H
+#define CLIENT_HANDLER_H
 
 
 /* structures */
@@ -20,7 +22,12 @@ struct handler_args
 
 /* function prototypes */
 void* client_handler(void* _handler_args);
-void notify_room(struct chat_node_list* _list, struct message* _msg);
+void send_msg_to_room(struct chat_node_list* _list, struct message* _msg);
 
 
 /* preprocessor definitions */
+#define MSG_SIZE 80
+
+
+#endif /* CLIENT_HANDLER_H */
+

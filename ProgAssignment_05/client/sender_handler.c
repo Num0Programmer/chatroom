@@ -8,6 +8,7 @@
 /* function implementation */
 void* sender_handler(void* _handler_args)
 {
+	printf("sender handler called here!\n");
 	int sock;
 	int command = 0;
 	struct handler_args* handler_args = _handler_args;
@@ -24,6 +25,7 @@ void* sender_handler(void* _handler_args)
 	switch (command)
 	{
 		case JOIN:
+			printf("join command\n");
 			join_server(handler_args);
 			strcpy(msg->note->username, "[default user]");
 			strcpy(msg->note->sentence, "Hello to the server!");
@@ -46,19 +48,14 @@ void* sender_handler(void* _handler_args)
 			printf("assumed note command\n");
 			break;
 	}
+	printf("past switch statement!\n");
 
 	// copying data in msg struct
 	// Maybe make this into a function?
 	msg->type = command;
 	msg->port = handler_args->port;
-	sscanf(
-		handler_args->ip_addr, "%hhu.%hhu.%hhu.%hhu",
-		&msg->ip_addr[0],
-		&msg->ip_addr[1],
-		&msg->ip_addr[2],
-		&msg->ip_addr[3]
-	);
-	printf("message port: %d\n", msg->port);
+	msg->ip_addr = (char*)malloc(strlen(handler_args->ip_addr) + 1);
+	strcpy(msg->ip_addr, handler_args->ip_addr);
 
 	// filling in socket info
 	sock = socket(AF_INET, SOCK_STREAM, 0);
@@ -82,8 +79,6 @@ void* sender_handler(void* _handler_args)
 
 	// exit function
 	close(sock);
-
-	//terminate thread if not main thread
 	pthread_exit(NULL);
 }
 
@@ -92,6 +87,7 @@ Unsure of what to do with this function atm, or if we really need it now
 */
 void* join_server(void* _handler_args)
 {
+	printf("\tjoin server called here!\n");
 	int cmd_len = 0;
 	int default_join_len = 5;
 	char* cpy_con_in = NULL;
@@ -108,6 +104,7 @@ void* join_server(void* _handler_args)
 		
 	// loads props into handler_args
 	load_props(handler_args);
+	printf("\tproperties successfully loaded!\n");
 
 	// find command string length
 	cmd_len = strlen(handler_args->console_input);
@@ -143,6 +140,7 @@ returns: void* with handler_args loaded with props
 */
 void load_props(struct handler_args* _handler_args)
 {
+	printf("\t\tload properties called here!\n");
 	// grab properties
 	char* properties_file = "test.properties";
     Properties* properties;

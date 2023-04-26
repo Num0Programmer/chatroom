@@ -11,7 +11,7 @@
 /* structures */
 struct chat_node
 {
-	uint8_t ip_addr[4];
+	char* ip_addr;
 	int port;
 	struct chat_node* next_node;
 };
@@ -28,11 +28,10 @@ struct chat_node_list
 
 /* function prototypes */
 void add_chat_node(struct chat_node_list* _list, struct chat_node* _node);
-void chat_node_init(struct chat_node* _node, uint8_t _ip_addr[4], int _port);
+void chat_node_init(struct chat_node* _node, char* _ip_addr, int _port);
 void chat_node_list_init(struct chat_node_list* _list);
 void destroy_chat_node_list(struct chat_node_list* _list);
-void remove_chat_node(struct chat_node_list* _list, uint8_t* _ip_addr);
-void write_to_chat_node_list(struct chat_node_list* _list, struct message* _msg);
+void remove_chat_node(struct chat_node_list* _list, char* _ip_addr);
 
 
 /* preprocessor definitions */
