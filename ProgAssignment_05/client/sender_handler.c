@@ -54,7 +54,6 @@ void* sender_handler(void* _handler_args)
 	// Maybe make this into a function?
 	msg->type = command;
 	msg->port = handler_args->port;
-	msg->ip_addr = (char*)malloc(strlen(handler_args->ip_addr) + 1);
 	strcpy(msg->ip_addr, handler_args->ip_addr);
 
 	// filling in socket info

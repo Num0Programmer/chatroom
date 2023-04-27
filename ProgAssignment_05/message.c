@@ -40,8 +40,10 @@ int command_read(char* input_string)
 		command_num = LEAVE;
 	}
 	// otherwise check for shutdown command with and with out newline
-	else if (strcmp(command_string, "SHUTDOWN\0") == 0 || 
-			 strcmp(command_string, "SHUTDOWN") == 0)
+	else if (
+		strcmp(command_string, "SHUTDOWN\0") == 0
+		|| strcmp(command_string, "SHUTDOWN") == 0
+	)
 	{
 		command_num = SHUTDOWN;
 
@@ -99,9 +101,15 @@ int read_int(int* int_ptr, int _sock)
 
 void read_message(struct message* _msg, int _sock)
 {
+	printf("\t\t\tread message called here!\n");
+	char read_ip_addr[15];
 	read(_sock, &_msg->type, sizeof(uint8_t));
 	read_int(&_msg->port, _sock);
-	read(_sock, _msg->ip_addr, sizeof(char) * 15);
+
+	read(_sock, &read_ip_addr, sizeof(char) * 15);
+	strcpy(_msg->ip_addr, read_ip_addr);
+	printf("\t\t\tsuccessfully read ip address!\n");
+
 	read_note(_msg->note, _sock);
 }
 

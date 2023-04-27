@@ -6,11 +6,10 @@ void* client_handler(void* _handler_args)
 {
 	printf("client handler called here!\n");
 	// allocate memory for incoming message
-	struct message* rec_msg = (struct message*)malloc(sizeof(struct message*));
-	rec_msg->ip_addr = (char*)malloc(sizeof(char) * 15);
+	struct message* rec_msg = (struct message*)malloc(sizeof(struct message));
 	rec_msg->note = (struct note*)malloc(sizeof(struct note));
 	// allocate memory for out going message
-	struct message* send_msg = (struct message*)malloc(sizeof(struct message*));
+	struct message* send_msg = (struct message*)malloc(sizeof(struct message));
 	send_msg->note = (struct note*)malloc(sizeof(struct note));
 
 	// extract passed arguments
@@ -34,7 +33,6 @@ void* client_handler(void* _handler_args)
 			send_msg->type = JOIN;
 			send_msg->port = client_socket;
 
-			send_msg->ip_addr = (char*)malloc(strlen(rec_msg->ip_addr) + 1);
 			strcpy(send_msg->ip_addr, rec_msg->ip_addr);
 
 			// set note information
@@ -44,11 +42,9 @@ void* client_handler(void* _handler_args)
 
 			struct chat_node* new_client = (struct chat_node*)malloc(sizeof(struct chat_node));
 			new_client->port = rec_msg->port;
-
-			new_client->ip_addr = (char*)malloc(strlen(rec_msg->ip_addr) + 1);
 			strcpy(new_client->ip_addr, rec_msg->ip_addr);
-
 			new_client->next_node = NULL;
+
 			printf("Client with IP: %s\n", new_client->ip_addr);
 			printf("Port: %d\n", new_client->port);
 			printf("Was added!\n");
