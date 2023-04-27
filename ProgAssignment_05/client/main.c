@@ -44,7 +44,6 @@ int main(int argc, char** argv)
 	handler_args->msg->note = (struct note*)malloc(sizeof(struct note));
 
 	memset(handler_args->msg->note->username, 0, 16);
-	strcpy(handler_args->msg->note->username, "Goofball");
 	memcpy(handler_args->props_str, props_name, strlen(props_name) + 1);
 
 	// parse command for JOIN
@@ -265,11 +264,19 @@ void load_props(struct handler_args* _handler_args)
 {
 	printf("\t\tload properties called here!\n");
 	// grab properties
-	char* properties_file = "test.properties";
+	char* properties_file = NULL;
     Properties* properties;
 	char* value;
     char* key = "MY_PORT";
-    
+
+	properties_file = malloc(sizeof(char) * (strlen(_handler_args->props_str) + 1));
+
+	// inject properties_file with the properties file string to use
+	strcpy(properties_file, _handler_args->props_str);
+
+
+	printf("prop file: %s\n", properties_file);
+
 	// grabbing MY_PORT value from ___.properties
     properties = property_read_properties(properties_file);
     value = property_get_property(properties, key);
@@ -308,5 +315,13 @@ void load_props(struct handler_args* _handler_args)
 	_handler_args->dest_ip_addr = malloc(strlen(value) + 1);
 
 	memcpy(_handler_args->dest_ip_addr, value, strlen(value) + 1);
-}
 
+	// grabbing USER_NAME from ____.properties
+	key = "USER_NAME";
+
+    properties = property_read_properties(properties_file);
+    value = property_get_property(properties, key);
+
+	strcpy(_handler_args->msg->note->username, value);
+
+}
