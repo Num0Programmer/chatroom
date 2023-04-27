@@ -11,7 +11,7 @@
 /* structures */
 struct chat_node
 {
-	char* ip_addr;
+	char ip_addr[15];
 	int port;
 	struct chat_node* next_node;
 };

@@ -20,7 +20,7 @@ struct note
 struct message
 {
 	uint8_t type;
-	char* ip_addr;
+	char ip_addr[15];
 	int port;
 	struct note* note;
 };
