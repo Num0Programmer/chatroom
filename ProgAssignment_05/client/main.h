@@ -25,13 +25,17 @@
 
 
 /* function prototypes */
-void load_props(struct handler_args* handler_args);
+int command_read(char* input_string);
+void* join_room(void* _handler_args, char* input_string);
+void load_props(struct handler_args* _handler_args);
+
 
 /* preprocessor definitions */
+#define DEFAULT_IP "127.0.0.1"
+#define DEFAULT_PORT 23657
+
+#define MAX_CHARS 64
+
 #define FALSE 0
 #define TRUE !FALSE
 
-#define MAX_CHARS 80
-
-#define DEFAULT_IP "127.0.0.1"
-#define DEFAULT_PORT 23657
