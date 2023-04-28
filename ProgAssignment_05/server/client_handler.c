@@ -31,18 +31,19 @@ void* client_handler(void* _handler_args)
 			printf("join command\n");
 			// set message information
 			send_msg->type = JOIN;
-			send_msg->port = client_socket;
+			send_msg->port = rec_msg->port;
 			send_msg->ip_addr = rec_msg->ip_addr;
 
 			// set note information
-			strcpy(send_msg->note->username, "[server]");
-			strcpy(send_msg->note->sentence, "This is a join message!");
+			strcpy(send_msg->note->username, rec_msg->note->username);
+			strcpy(send_msg->note->sentence, rec_msg->note->sentence);
 			send_msg->note->length = 23;
 
 			struct chat_node* new_client = (struct chat_node*)malloc(sizeof(struct chat_node));
 			new_client->port = rec_msg->port;
 			new_client->ip_addr = rec_msg->ip_addr;
 			new_client->next_node = NULL;
+			printf("username: %s\n", rec_msg->note->username);
 
 			printf("Client with IP: %s\n", ip_ntop(new_client->ip_addr));
 			printf("Port: %d\n", new_client->port);
@@ -116,7 +117,7 @@ void send_msg_to_room(struct chat_node_list* _list, struct message* _msg)
 		}
 		printf("\t\t\tConnection was successful!\n");
 
-		write_message(_msg, wrk_node->port);
+		write_message(_msg, sock);
 
 		printf("\t\t\tmessage on to client!\n");
 		wrk_node = wrk_node->next_node;

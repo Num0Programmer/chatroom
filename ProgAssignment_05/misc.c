@@ -40,7 +40,7 @@ int read_complete(int socket, void* buffer, unsigned int size)
     ssize_t bytes_read = 0;
     ssize_t bytes_read_all = 0;
     char* buffer_ptr = buffer;
-    
+
     do
     {
         bytes_read = read(socket, buffer_ptr, size);
@@ -54,13 +54,14 @@ int read_complete(int socket, void* buffer, unsigned int size)
                 // network error
                 return -1;
             default:
+
                 size = size - (int)bytes_read;
                 buffer_ptr += bytes_read;
                 bytes_read_all += bytes_read;
         }        
     }
     while(size != 0);
-    
+
     return (int) bytes_read_all;
 }
 

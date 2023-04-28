@@ -94,6 +94,7 @@ void* handle_conn(void* _sock)
 	printf("\t\thandle conn called here!\n");
 	// copy conn socket
 	int conn_socket = *((int*)_sock);
+
 	// default message structure
 	struct message* msg = (struct message*)malloc(sizeof(struct message));
 	msg->note = (struct note*)malloc(sizeof(struct note));
@@ -113,15 +114,18 @@ void* handle_conn(void* _sock)
 
 		case LEAVE:
 			// print leaving log
+			printf("\t\tmessage was a LEAVE message!\n");
 			break;
 
 		case SHUTDOWN:
 			// print shutdown log
+			printf("\t\tmessage was a SHUTDOWN message!\n");
 			break;
 
 		// assume NOTE
 		default:
 			// print message
+			printf("\t\tmessage was a NOTE message!\n");
 			break;
 	}
 
