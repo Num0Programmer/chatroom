@@ -1,14 +1,15 @@
 #include <arpa/inet.h>
+#include <fcntl.h>
+#include <netdb.h>
+#include <netinet/in.h>
 #include <pthread.h>
-#define _GNU_SOURCE //this and unistd.h is here to support gettid for
-#include <unistd.h> //distinguishing main threads from created threads
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/socket.h>
-#include <unistd.h>
+#include <string.h>
 #include <sys/socket.h>
 #include <sys/types.h>
-#include <string.h>
+#include <sys/socket.h>
+#include <unistd.h> //distinguishing main threads from created threads
 
 #include "../chat_node.h"
 #include "../message.h"
@@ -17,12 +18,6 @@
 
 #ifndef SENDER_HANDLER_H
 #define SENDER_HANDLER_H
-
-#define MSG_SIZE 80
-
-#define SERVER_ADDR "142.11.213.134"
-#define LOCAL_SERVER_ADDR "127.0.0.1"
-#define LOCAL_SERVER_PORT 23657
 
 
 /* structures */
@@ -44,7 +39,15 @@ struct handler_args
 void* sender_handler(void* _handler_args);
 
 /* preprocessor definitions */
+#define _GNU_SOURCE //this and unistd.h is here to support gettid for
+
 #define FALSE 0
 #define TRUE !FALSE
+
+#define MSG_SIZE 80
+#define SERVER_ADDR "142.11.213.134"
+#define LOCAL_SERVER_ADDR "127.0.0.1"
+#define LOCAL_SERVER_PORT 23657
+
 
 #endif /* SENDER_HANDLER_H */

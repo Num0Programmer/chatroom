@@ -10,11 +10,10 @@ pthread_mutex_t mutex;
 int main(int argc, char** argv)
 {
 	// define thread information
-	pthread_t rec_thread;
-	pthread_t send_thread;
+	pthread_t receiver_thread;
 	pthread_mutex_init(&mutex, NULL);
 	// define funciton handler arguments
-	struct handler_args* handler_args = (struct handler_args*)malloc(
+	struct handler_args* ha = (struct handler_args*)malloc(
 		sizeof(struct handler_args)
 	);
 
@@ -30,60 +29,17 @@ int main(int argc, char** argv)
 		exit(EXIT_FAILURE);
 	}
 
-	// zero out client_input
-	memset(client_input, 0, MAX_CHARS);
+	// initialize handler args
+	ha->mutex = &mutex;
+	ha->connected = FALSE;
+	ha->props_str = malloc(strlen(props_name) + 1);
+	ha->msg = (struct message*)malloc(sizeof(struct message));
+	ha->msg->note = (struct note*)malloc(sizeof(struct note));
 
-	// capture command line input
-	fgets(client_input, MAX_CHARS, stdin);
+	memset(ha->msg->note->username, 0, 16);
+	memcpy(ha->props_str, props_name, strlen(props_name) + 1);
 
-	// initialize handler_args
-	handler_args->mutex = &mutex;
-	handler_args->connected = FALSE;
-	handler_args->props_str = malloc(strlen(props_name) + 1);
-	handler_args->msg = (struct message*)malloc(sizeof(struct message));
-	handler_args->msg->note = (struct note*)malloc(sizeof(struct note));
-
-	memset(handler_args->msg->note->username, 0, 16);
-	memcpy(handler_args->props_str, props_name, strlen(props_name) + 1);
-
-	// parse command for JOIN
-	msg_type = command_read(client_input);
-
-	if (msg_type == JOIN)
-	{
-		join_room(handler_args, client_input);
-		handler_args->msg->type = JOIN;
-		handler_args->msg->port = handler_args->port;
-		handler_args->msg->ip_addr = ip_pton(handler_args->ip_addr);
-
-		strcpy(handler_args->msg->note->sentence, "This is a join message!");
-		handler_args->msg->note->length = 23;
-	}
-	else if (msg_type == LEAVE)
-	{
-		printf("You must join a room before leaving!\n");
-	}
-	else if (msg_type == NOTE)
-	{
-		printf("You must join a room before chatting!\n");
-	}
-	
-	// start receiver thread - pass networking information
-	pthread_create(&rec_thread, NULL, receiver_handler, (void*)&handler_args->port);
-
-	// start sender thread - hand message to send
-	if (pthread_create(&send_thread, NULL, sender_handler, (void*)handler_args) != 0)
-	{
-		perror("Error failure creating thread");
-		exit(EXIT_FAILURE);
-	}
-	
-	// check detach sender thread
-	if (pthread_detach(send_thread) != 0)
-	{
-		perror("Error detaching thread");
-		exit(EXIT_FAILURE);
-	}
+	load_props(ha);
 
 	// zero out clint_input
 	memset(client_input, 0, MAX_CHARS);
@@ -92,32 +48,77 @@ int main(int argc, char** argv)
 	{
 		// zero out clint_input
 		memset(client_input, 0, MAX_CHARS);
-		memset(handler_args->msg->note->sentence, 0, 64);
+		memset(ha->msg->note->sentence, 0, 64);
 
 		// capture input from command line
 		fgets(client_input, MAX_CHARS, stdin);
 
-		// extract client input handler_args
+		// extract client input ha
 		msg_type = command_read(client_input);
 
 		// switch according to msg_type
 		switch(msg_type)
 		{
 			case JOIN:
-				join_room(handler_args, client_input);
-				handler_args->msg->type = JOIN;
-				handler_args->msg->port = handler_args->port;
-				handler_args->msg->ip_addr = ip_pton(handler_args->ip_addr);
+				join_room(ha, client_input);
+				ha->msg->type = JOIN;
+				ha->msg->port = ha->port;
+				ha->msg->ip_addr = ip_pton(ha->ip_addr);
 
-				strcpy(handler_args->msg->note->sentence, "This is a join message!");
-				handler_args->msg->note->length = 23;
+				strcpy(ha->msg->note->sentence, "Request to join room!");
+				ha->msg->note->length = 21;
+
+				if (pthread_create(
+						&receiver_thread, NULL,
+						receiver_handler, (void*)&ha->port
+					) != 0
+				)
+				{
+					perror("Error failure creating receiver thread");
+					exit(EXIT_FAILURE);
+				}
+
+				ha->connected = TRUE;
+				break;
+
+			case LEAVE:
+				if (!ha->connected)
+				{
+					print_join_help();
+					continue;
+				}
+				break;
+
+			case SHUTDOWN:
+				if (!ha->connected)
+				{
+					print_join_help();
+					continue;
+				}
+				break;
+
+			case SHUTDOWN_ALL:
+				if (!ha->connected)
+				{
+					print_join_help();
+					continue;
+				}
+				break;
+
+			default:	// assume NOTE
+				if (!ha->connected)
+				{
+					print_join_help();
+					continue;
+				}
 				break;
 		}
 
 		// start sender thread - hand message to send
-		if (pthread_create(&send_thread, NULL, sender_handler, (void*)handler_args) != 0)
+		pthread_t send_thread;
+		if (pthread_create(&send_thread, NULL, sender_handler, (void*)ha) != 0)
 		{
-			perror("Error failure creating thread");
+			perror("Error failure creating sender thread");
 			exit(EXIT_FAILURE);
 		}
 		
@@ -209,7 +210,6 @@ Unsure of what to do with this function atm, or if we really need it now
 */
 void* join_room(void* _handler_args, char* input_string)
 {
-	printf("\tjoin room called here!\n");
 	int cmd_len = 0;
 	int default_join_len = 5;
 	char* cpy_con_in = NULL;
@@ -262,7 +262,6 @@ returns: void* with handler_args loaded with props
 */
 void load_props(struct handler_args* _handler_args)
 {
-	printf("\t\tload properties called here!\n");
 	// grab properties
 	char* properties_file = NULL;
     Properties* properties;
@@ -273,9 +272,6 @@ void load_props(struct handler_args* _handler_args)
 
 	// inject properties_file with the properties file string to use
 	strcpy(properties_file, _handler_args->props_str);
-
-
-	printf("prop file: %s\n", properties_file);
 
 	// grabbing MY_PORT value from ___.properties
     properties = property_read_properties(properties_file);
@@ -323,5 +319,12 @@ void load_props(struct handler_args* _handler_args)
     value = property_get_property(properties, key);
 
 	strcpy(_handler_args->msg->note->username, value);
-
 }
+
+void print_join_help()
+{
+	printf("Please connect to a room:\n");
+	printf("JOIN - the default room in *.properties\n");
+	printf("JOIN <ip address> <port> - a specific room\n\n");
+}
+

@@ -1,8 +1,15 @@
 #include <arpa/inet.h>
+#include <fcntl.h>
+#include <netdb.h>
+#include <netinet/in.h>
 #include <pthread.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/socket.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <unistd.h>
 
 #include "sender_handler.h"
@@ -27,8 +34,6 @@ void* handle_conn(void* _sock);
 #define FALSE 0
 #define TRUE !FALSE
 
-#define RECEIVER_ADDR "127.0.0.1"
-#define PORT 23657
 #define NUM_CONNECTIONS 20
 
 
