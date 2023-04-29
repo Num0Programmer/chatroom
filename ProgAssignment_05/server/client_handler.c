@@ -104,8 +104,8 @@ void send_msg_to_room(struct chat_node_list* _list, struct message* _msg)
 		send_addr.sin_port = htons(wrk_node->port);
 
 		printf("\t\t\tWriting message to:\n");
-		printf("\t\t\tIP: %s\n", ip_ntop(wrk_node->ip_addr));
-		printf("\t\t\tPort: %d\n", wrk_node->port);
+		printf("\t\t\tIP: %u\n", send_addr.sin_addr.s_addr);
+		printf("\t\t\tPort: %u\n", send_addr.sin_port);
 
 		// connect to client's socket
 		printf("\t\t\tAttempting connection...\n");

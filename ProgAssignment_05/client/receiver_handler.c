@@ -51,8 +51,8 @@ void* receiver_handler(void* rec_port)
 
 	// indicate server is about to enter server loop
 	printf("\tReceiver started:\n");
-	printf("\tIP Address: %s\n", HOME_ADDR);
-	printf("\tPort number: %d\n", *((int*)rec_port));
+	printf("\tIP Address: %u\n", rec_address.sin_addr.s_addr);
+	printf("\tPort number: %u\n", rec_address.sin_port);
 
 	// start receiver loop
 	while (TRUE)
@@ -128,7 +128,6 @@ void* handle_conn(void* _sock)
 			printf("\t\tmessage was a NOTE message!\n");
 			break;
 	}
-
 
 	// exit function
 	if (close(conn_socket) != 0)

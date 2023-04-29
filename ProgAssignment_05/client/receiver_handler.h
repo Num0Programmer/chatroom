@@ -27,7 +27,7 @@ void* handle_conn(void* _sock);
 #define FALSE 0
 #define TRUE !FALSE
 
-#define HOME_ADDR "127.0.0.1"
+#define RECEIVER_ADDR "127.0.0.1"
 #define PORT 23657
 #define NUM_CONNECTIONS 20
 
