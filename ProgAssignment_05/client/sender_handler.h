@@ -28,8 +28,7 @@
 /* structures */
 struct handler_args
 {
-	char* console_input;
-	pthread_mutex_t* mutex;
+	struct message* msg;
 	char* ip_addr;
 	int port;
 	char* props_str;
@@ -37,13 +36,12 @@ struct handler_args
 	int dest_port;
 	int connected;	// this is a bool in accordance with TRUE FALSE macros
 					// defined in main.h
+	pthread_mutex_t* mutex;
 };
 
 
 /* function prototypes */
 void* sender_handler(void* _handler_args);
-void* join_server(void* _handler_args);
-void load_props(struct handler_args* _handler_args);
 
 /* preprocessor definitions */
 #define FALSE 0

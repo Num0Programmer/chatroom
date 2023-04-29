@@ -5,6 +5,8 @@
 #include <unistd.h>
 #include <stdint.h>
 
+#include "misc.h"
+
 
 #ifndef MESSAGE_H
 #define MESSAGE_H
@@ -21,7 +23,7 @@ struct note
 struct message
 {
 	uint8_t type;
-	char ip_addr[15];
+	unsigned int ip_addr;
 	int port;
 	struct note* note;
 };
@@ -39,7 +41,6 @@ enum types
 
 
 /* function prototypes */
-int command_read(char* input_string);
 void print_note(struct note* _note);
 int read_int(int* int_ptr, int _sock);
 void read_message(struct message* _msg, int _sock);

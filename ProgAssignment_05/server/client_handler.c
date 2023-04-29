@@ -31,21 +31,21 @@ void* client_handler(void* _handler_args)
 			printf("join command\n");
 			// set message information
 			send_msg->type = JOIN;
-			send_msg->port = client_socket;
-
-			strcpy(send_msg->ip_addr, rec_msg->ip_addr);
+			send_msg->port = rec_msg->port;
+			send_msg->ip_addr = rec_msg->ip_addr;
 
 			// set note information
-			strcpy(send_msg->note->username, "[server]");
-			strcpy(send_msg->note->sentence, "This is a join message!");
+			strcpy(send_msg->note->username, rec_msg->note->username);
+			strcpy(send_msg->note->sentence, rec_msg->note->sentence);
 			send_msg->note->length = 23;
 
 			struct chat_node* new_client = (struct chat_node*)malloc(sizeof(struct chat_node));
 			new_client->port = rec_msg->port;
-			strcpy(new_client->ip_addr, rec_msg->ip_addr);
+			new_client->ip_addr = rec_msg->ip_addr;
 			new_client->next_node = NULL;
+			printf("username: %s\n", rec_msg->note->username);
 
-			printf("Client with IP: %s\n", new_client->ip_addr);
+			printf("Client with IP: %s\n", ip_ntop(new_client->ip_addr));
 			printf("Port: %d\n", new_client->port);
 			printf("Was added!\n");
 
@@ -82,16 +82,48 @@ void* client_handler(void* _handler_args)
 
 void send_msg_to_room(struct chat_node_list* _list, struct message* _msg)
 {
+	int sock;
 	struct chat_node* wrk_node = _list->head;
 
 	while (wrk_node != NULL)
 	{
+		struct sockaddr_in send_addr;
+
+		// create socket for sending
+		if ((sock = socket(AF_INET, SOCK_STREAM, 0)) == -1)
+		{
+			perror("Error creating socket");
+			exit(EXIT_FAILURE);
+		}
+
+		// set the address family
+		send_addr.sin_family = AF_INET;
+		// convert node's IP address and set the address
+		send_addr.sin_addr.s_addr = inet_addr(ip_ntop(wrk_node->ip_addr));
+		// set the port number
+		send_addr.sin_port = htons(wrk_node->port);
+
 		printf("\t\t\tWriting message to:\n");
-		printf("\t\t\tIP: %s\n", wrk_node->ip_addr);
+		printf("\t\t\tIP: %s\n", ip_ntop(wrk_node->ip_addr));
 		printf("\t\t\tPort: %d\n", wrk_node->port);
-		write_message(_msg, wrk_node->port);
+
+		// connect to client's socket
+		printf("\t\t\tAttempting connection...\n");
+		if (connect(sock, (struct sockaddr*)&send_addr, sizeof(send_addr)) == -1)
+		{
+			// report connection error
+			perror("Error connection unsuccessful");
+			exit(EXIT_FAILURE);
+		}
+		printf("\t\t\tConnection was successful!\n");
+
+		write_message(_msg, sock);
+
 		printf("\t\t\tmessage on to client!\n");
 		wrk_node = wrk_node->next_node;
 	}
+
+	// exit function
+	close(sock);
 }
 

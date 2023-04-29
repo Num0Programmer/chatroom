@@ -49,9 +49,15 @@ void* receiver_handler(void* rec_port)
 		exit(EXIT_FAILURE);
 	}
 
-	// start server loop
+	// indicate server is about to enter server loop
+	printf("\tReceiver started:\n");
+	printf("\tIP Address: %s\n", HOME_ADDR);
+	printf("\tPort number: %d\n", *((int*)rec_port));
+
+	// start receiver loop
 	while (TRUE)
 	{
+		fprintf(stdout, "\tReceiver loop running...\n");
 		pthread_mutex_lock(&mutex);
 
 		// accept client connection
@@ -88,6 +94,7 @@ void* handle_conn(void* _sock)
 	printf("\t\thandle conn called here!\n");
 	// copy conn socket
 	int conn_socket = *((int*)_sock);
+
 	// default message structure
 	struct message* msg = (struct message*)malloc(sizeof(struct message));
 	msg->note = (struct note*)malloc(sizeof(struct note));
@@ -107,15 +114,18 @@ void* handle_conn(void* _sock)
 
 		case LEAVE:
 			// print leaving log
+			printf("\t\tmessage was a LEAVE message!\n");
 			break;
 
 		case SHUTDOWN:
 			// print shutdown log
+			printf("\t\tmessage was a SHUTDOWN message!\n");
 			break;
 
 		// assume NOTE
 		default:
 			// print message
+			printf("\t\tmessage was a NOTE message!\n");
 			break;
 	}
 
@@ -130,35 +140,3 @@ void* handle_conn(void* _sock)
 	pthread_exit(NULL);
 }
 
-int read_complete(int _sock, int* int_ptr, size_t size)
-{
-	printf("read complete called here!\n");
-	// define bytes read
-	int bytes_read = 0;
-	
-	// loop until all bytes left is 0
-	for (int bytes_left = 4; bytes_left > 0; bytes_left -= 1)
-	{
-		// read from network into int_ptr
-		bytes_read = read(_sock, int_ptr, sizeof(size));
-
-		// check all bytes read
-		if (bytes_read == 4)
-		{
-			// return all bytes read
-			return 4;
-		}
-		// check no bytes read
-		else if (bytes_read == 0)
-		{
-			// return no bytes read
-			return 0;
-		}
-
-		// shift int_ptr data left by bytes remaining
-		*int_ptr <<= (bytes_left - bytes_read) * 8;
-	}
-
-	// return error in network
-	return -1;
-}

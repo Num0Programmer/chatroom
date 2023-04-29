@@ -8,6 +8,7 @@
 #include "sender_handler.h"
 #include "../chat_node.h"
 #include "../message.h"
+#include "../misc.h"
 
 
 #ifndef RECEIVER_HANDLER_H
@@ -20,7 +21,6 @@
 /* function prototypes */
 void* receiver_handler(void* rec_port);
 void* handle_conn(void* _sock);
-int read_complete(int _sock, int* int_value_ptr, size_t size);
 
 
 /* preprocessor definitions */
