@@ -93,6 +93,7 @@ int main(int argc, char** argv)
 					perror("Error canceling receiver thread");
 					exit(EXIT_FAILURE);
 				}
+				ha->connected = FALSE;
 				break;
 
 			case SHUTDOWN:
