@@ -87,6 +87,12 @@ int main(int argc, char** argv)
 					print_join_help();
 					continue;
 				}
+
+				if (pthread_cancel(receiver_thread) == -1)
+				{
+					perror("Error canceling receiver thread");
+					exit(EXIT_FAILURE);
+				}
 				break;
 
 			case SHUTDOWN:
