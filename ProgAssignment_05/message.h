@@ -11,11 +11,16 @@
 #define MESSAGE_H
 
 
+/* preprocessor definitions */
+#define LEN_USERNAME 16
+#define LEN_SENTENCE 64
+
+
 /* structures */
 struct note
 {
-	char username[16];
-	char sentence[64];
+	char username[LEN_USERNAME];
+	char sentence[LEN_SENTENCE];
 	uint8_t length;
 };
 
@@ -40,15 +45,11 @@ enum types
 
 
 /* function prototypes */
-void print_note(struct note* _note);
 int read_int(int* int_ptr, int _sock);
 void read_message(struct message* _msg, int _sock);
 void read_note(struct note* _note, int _sock);
 void write_message(struct message* _msg, int _sock);
 void write_note(struct note* _note, int _sock);
-
-
-/* preprocessor definitions */
 
 
 #endif /* MESSAGE_H */

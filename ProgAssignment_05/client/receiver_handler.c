@@ -25,8 +25,7 @@ void* receiver_handler(void* receiver_port)
 	}
 	
 	receiver_address.sin_family = AF_INET;	// define IP family
-	// accept server connection
-	receiver_address.sin_addr.s_addr = htonl(INADDR_ANY);
+	receiver_address.sin_addr.s_addr = htonl(INADDR_ANY);	// accept on any port
 	receiver_address.sin_port = htons(*((int*)receiver_port));	// port to listen on
 	
 	if (bind(
@@ -86,13 +85,13 @@ void* handle_conn(void* _sock)
 {
 	// copy conn socket
 	int conn_socket = *((int*)_sock);
+	
+	// unlock mutex
+	pthread_mutex_unlock(&mutex);
 
 	// default message structure
 	struct message* msg = (struct message*)malloc(sizeof(struct message));
 	msg->note = (struct note*)malloc(sizeof(struct note));
-
-	// unlock mutex
-	pthread_mutex_unlock(&mutex);
 
 	read_message(msg, conn_socket);
 	

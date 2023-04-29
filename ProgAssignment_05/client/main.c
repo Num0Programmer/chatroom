@@ -36,7 +36,7 @@ int main(int argc, char** argv)
 	ha->msg = (struct message*)malloc(sizeof(struct message));
 	ha->msg->note = (struct note*)malloc(sizeof(struct note));
 
-	memset(ha->msg->note->username, 0, 16);
+	memset(ha->msg->note->username, 0, LEN_USERNAME);
 	memcpy(ha->props_str, props_name, strlen(props_name) + 1);
 
 	load_props(ha);
@@ -48,13 +48,18 @@ int main(int argc, char** argv)
 	{
 		// zero out clint_input
 		memset(client_input, 0, MAX_CHARS);
-		memset(ha->msg->note->sentence, 0, 64);
+		memset(ha->msg->note->sentence, 0, LEN_SENTENCE);
 
 		// capture input from command line
+		printf("> ");
 		fgets(client_input, MAX_CHARS, stdin);
 
 		// extract client input ha
-		msg_type = command_read(client_input);
+		if ((msg_type = command_read(client_input)) != JOIN && !ha->connected)
+		{
+			print_join_help();
+			continue;
+		}
 
 		// switch according to msg_type
 		switch(msg_type)
@@ -65,7 +70,7 @@ int main(int argc, char** argv)
 				ha->msg->port = ha->port;
 				ha->msg->ip_addr = ip_pton(ha->ip_addr);
 
-				strcpy(ha->msg->note->sentence, "Request to join room!");
+				strcpy(ha->msg->note->sentence, "FUCK!");
 				ha->msg->note->length = 21;
 
 				if (pthread_create(
@@ -82,12 +87,6 @@ int main(int argc, char** argv)
 				break;
 
 			case LEAVE:
-				if (!ha->connected)
-				{
-					print_join_help();
-					continue;
-				}
-
 				if (pthread_cancel(receiver_thread) == -1)
 				{
 					perror("Error canceling receiver thread");
@@ -97,27 +96,13 @@ int main(int argc, char** argv)
 				break;
 
 			case SHUTDOWN:
-				if (!ha->connected)
-				{
-					print_join_help();
-					continue;
-				}
 				break;
 
 			case SHUTDOWN_ALL:
-				if (!ha->connected)
-				{
-					print_join_help();
-					continue;
-				}
 				break;
 
 			default:	// assume NOTE
-				if (!ha->connected)
-				{
-					print_join_help();
-					continue;
-				}
+				sscanf(client_input, "%s", ha->msg->note->sentence);
 				break;
 		}
 
