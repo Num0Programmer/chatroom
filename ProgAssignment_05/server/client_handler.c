@@ -70,7 +70,7 @@ void* client_handler(void* _handler_args)
 			);
 			printf("\t\tRoom size: %zu\n", ha->client_list->size);
 			// unlock mutex
-			pthread_mutex_unlock(handler_args->mutex);
+			pthread_mutex_unlock(ha->mutex);
 			break;
 
 		case LEAVE:
@@ -118,7 +118,7 @@ void* client_handler(void* _handler_args)
 	send_msg->note->length = strlen(send_msg->note->username);
 
 	// forward message to room
-	send_msg_to_room(handler_args->client_list, send_msg);
+	send_msg_to_room(ha->client_list, send_msg);
 
 	// exit function
 	if (close(client_socket) == -1)
