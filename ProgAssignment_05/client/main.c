@@ -46,6 +46,8 @@ int main(int argc, char** argv)
 	// while chatting code is not equal to SHUTDOWN
 	while (msg_type != SHUTDOWN || msg_type != SHUTDOWN_ALL)
 	{
+		pthread_mutex_lock(&mutex);
+
 		// zero out clint_input
 		memset(client_input, 0, MAX_CHARS);
 		memset(ha->msg->note->sentence, 0, LEN_SENTENCE);
@@ -71,7 +73,6 @@ int main(int argc, char** argv)
 				ha->msg->ip_addr = ip_pton(ha->ip_addr);
 
 				strcpy(ha->msg->note->sentence, sentence);
-				printf("In sentence: %s\n", ha->msg->note->sentence);
 				ha->msg->note->length = 21;
 
 				if (pthread_create(
@@ -121,8 +122,6 @@ int main(int argc, char** argv)
 			perror("Error detaching thread");
 			exit(EXIT_FAILURE);
 		}
-
-		pthread_mutex_lock(&mutex);
 	}
 
 	// exit program
