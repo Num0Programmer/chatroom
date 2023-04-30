@@ -40,13 +40,6 @@ int main(int argc, char** argv)
 	memcpy(ha->props_str, props_name, strlen(props_name) + 1);
 
 	load_props(ha);
-	if (pthread_create(&receiver_thread, NULL, receiver_handler, 
-				                            (void*)&ha->port) != 0)
-	{
-		perror("Error failure creating receiver thread");
-		exit(EXIT_FAILURE);
-	}
-
 	if (pthread_create(
 			&receiver_thread, NULL,
 			receiver_handler, (void*)&ha
@@ -112,6 +105,7 @@ int main(int argc, char** argv)
 				client_input[strlen(client_input) - 1] = '\0';
 				ha->msg->type = NOTE;
 				strcpy(ha->msg->note->sentence, client_input);
+				ha->msg->note->length = strlen(ha->msg->note->sentence);
 				break;
 		}
 
