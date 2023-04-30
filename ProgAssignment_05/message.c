@@ -26,6 +26,7 @@ void write_message(struct message* _msg, int _sock)
 	write(_sock, &_msg->type, sizeof(uint8_t));
 	write(_sock, &_msg->port, sizeof(int));	
 	write(_sock, &_msg->ip_addr, sizeof(unsigned int));
+
 	write_note(_msg->note, _sock);
 }
 

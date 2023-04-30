@@ -24,8 +24,8 @@ void* client_handler(void* _handler_args)
 	read_message(rec_msg, client_socket);
 
 	printf(
-		"Received message from %u on port %u\n",
-		rec_msg->ip_addr, rec_msg->port
+		"Received message from %s on port %d\n",
+		ip_ntop(rec_msg->ip_addr), rec_msg->port
 	);
 	printf(
 		"[%s] %s: %hhu\n",
@@ -102,8 +102,8 @@ void send_msg_to_room(struct chat_node_list* _list, struct message* _msg)
 		send_addr.sin_port = htons(wrk_node->port);
 
 		printf(
-			"\tWriting message to %u on port %u\n",
-			send_addr.sin_addr.s_addr, send_addr.sin_port
+			"\tWriting message to %s on port %u\n",
+			ip_ntop(wrk_node->ip_addr), send_addr.sin_port
 		);
 
 		// connect to client's socket

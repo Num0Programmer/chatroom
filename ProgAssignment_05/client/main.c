@@ -51,7 +51,6 @@ int main(int argc, char** argv)
 		memset(ha->msg->note->sentence, 0, LEN_SENTENCE);
 
 		// capture input from command line
-		printf("> ");
 		fgets(client_input, MAX_CHARS, stdin);
 
 		// extract client input ha
@@ -66,11 +65,13 @@ int main(int argc, char** argv)
 		{
 			case JOIN:
 				join_room(ha, client_input);
+				char sentence[LEN_SENTENCE] = "Request to join room!";
 				ha->msg->type = JOIN;
 				ha->msg->port = ha->port;
 				ha->msg->ip_addr = ip_pton(ha->ip_addr);
 
-				strcpy(ha->msg->note->sentence, "FUCK!");
+				strcpy(ha->msg->note->sentence, sentence);
+				printf("In sentence: %s\n", ha->msg->note->sentence);
 				ha->msg->note->length = 21;
 
 				if (pthread_create(

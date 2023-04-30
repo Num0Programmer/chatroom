@@ -47,6 +47,12 @@ void* receiver_handler(void* receiver_port)
 		exit(EXIT_FAILURE);
 	}
 
+	/*
+	printf("\n\nReceiver started:\n");
+	printf("IP addres: %u\n", receiver_address.sin_addr.s_addr);
+	printf("Port number: %u\n\n", receiver_address.sin_port);
+	*/
+
 	// start receiver loop
 	while (TRUE)
 	{
