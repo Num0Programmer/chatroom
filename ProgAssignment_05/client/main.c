@@ -46,11 +46,13 @@ int main(int argc, char** argv)
 	// while chatting code is not equal to SHUTDOWN
 	while (msg_type != SHUTDOWN || msg_type != SHUTDOWN_ALL)
 	{
-		// zero out clint_input
+		// reset variable loop vars
+		ha->msg->type = NOTE;
 		memset(client_input, 0, MAX_CHARS);
 		memset(ha->msg->note->sentence, 0, LEN_SENTENCE);
 
 		// capture input from command line
+		printf("> ");
 		fgets(client_input, MAX_CHARS, stdin);
 
 		// extract client input ha
@@ -65,14 +67,12 @@ int main(int argc, char** argv)
 		{
 			case JOIN:
 				join_room(ha, client_input);
-				char sentence[LEN_SENTENCE] = "Request to join room!";
 				ha->msg->type = JOIN;
 				ha->msg->port = ha->port;
 				ha->msg->ip_addr = ip_pton(ha->ip_addr);
 
-				strcpy(ha->msg->note->sentence, sentence);
-				printf("In sentence: %s\n", ha->msg->note->sentence);
-				ha->msg->note->length = 21;
+				strcpy(ha->msg->note->sentence, "Join request");
+				ha->msg->note->length = 12;
 
 				if (pthread_create(
 						&receiver_thread, NULL,
@@ -103,7 +103,9 @@ int main(int argc, char** argv)
 				break;
 
 			default:	// assume NOTE
-				sscanf(client_input, "%s", ha->msg->note->sentence);
+				client_input[strlen(client_input) - 1] = '\0';
+				strcpy(ha->msg->note->sentence, client_input);
+				ha->msg->note->length = strlen(ha->msg->note->sentence);
 				break;
 		}
 
@@ -116,7 +118,7 @@ int main(int argc, char** argv)
 		}
 		
 		// check detach sender thread
-		if (pthread_detach(send_thread) != 0)
+		if (pthread_join(send_thread, NULL) != 0)
 		{
 			perror("Error detaching thread");
 			exit(EXIT_FAILURE);
@@ -138,7 +140,7 @@ int command_read(char* input_string)
 	char *command_string = NULL;
 	char *second_string= NULL;
 
-	int command_num;
+	int command_num = NOTE;
 
 	cpy_in_str = malloc(sizeof(char) * (strlen(input_string) + 1));
 
@@ -187,11 +189,6 @@ int command_read(char* input_string)
 				command_num = SHUTDOWN_ALL;
 			}
 		}
-	}
-	// otherwise assume note
-	else
-	{
-		command_num = NOTE;
 	}
 	
 	// return the number associated with the enum command
