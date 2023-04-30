@@ -96,9 +96,23 @@ int main(int argc, char** argv)
 				break;
 
 			case SHUTDOWN:
+				ha->msg->type = SHUTDOWN;
+				ha->msg->port = ha->port;
+				ha->msg->ip_addr = ip_pton(ha->ip_addr);
+
+				strcpy(ha->msg->note->sentence, "Shutdown note");
+				ha->msg->note->length = 10;
+				ha->connected = FALSE;
 				break;
 
 			case SHUTDOWN_ALL:
+				ha->msg->type = SHUTDOWN_ALL;
+				ha->msg->port = ha->port;
+				ha->msg->ip_addr = ip_pton(ha->ip_addr);
+
+				strcpy(ha->msg->note->sentence, "Shutdown all note");
+				ha->msg->note->length = 10;
+				ha->connected = FALSE;
 				break;
 
 			default:	// assume NOTE
