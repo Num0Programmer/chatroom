@@ -144,9 +144,8 @@ void send_msg_to_room(struct chat_node_list* _list, struct message* _msg)
 			send_addr.sin_port = htons(wrk_node->port);
 
 			printf(
-				"Connecting %s on port %d...\n",
-				ip_ntop(wrk_node->ip_addr),
-				wrk_node->port
+				"Connecting %u on port %u...\n",
+				send_addr.sin_addr.s_addr, send_addr.sin_port
 			);
 			// connect to client's socket
 			if (connect(sock, (struct sockaddr*)&send_addr, sizeof(send_addr)) == -1)

@@ -22,7 +22,7 @@ void* sender_handler(void* _handler_args)
 	if (connect(sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1)
     {
 		// report socket creation error
-        printf("Error connection unsuccessful");
+        perror("Error connection unsuccessful");
         exit(EXIT_FAILURE);
     }
 

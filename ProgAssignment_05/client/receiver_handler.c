@@ -48,6 +48,10 @@ void* receiver_handler(void* _handler_args)
 		exit(EXIT_FAILURE);
 	}
 
+	printf("Receiver started:\n");
+	printf("IP: %u\n", receiver_address.sin_addr.s_addr);
+	printf("Port: %u\n", receiver_address.sin_port);
+
 	// start receiver loop
 	while (TRUE)
 	{
@@ -84,6 +88,7 @@ void* receiver_handler(void* _handler_args)
 		exit(EXIT_FAILURE);
 	}
 	pthread_mutex_destroy(&mutex);
+	printf("end of receiver handler!\n");
 	pthread_exit(NULL);	// reports status of conn to chatroom
 }
 
