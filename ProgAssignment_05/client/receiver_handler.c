@@ -47,9 +47,11 @@ void* receiver_handler(void* receiver_port)
 		exit(EXIT_FAILURE);
 	}
 
+	/*
 	printf("Receiver started:\n");
 	printf("IP: %u\n", receiver_address.sin_addr.s_addr);
 	printf("Port: %u\n", receiver_address.sin_port);
+	*/
 
 	// start receiver loop
 	while (TRUE)
@@ -108,13 +110,16 @@ void* handle_conn(void* _sock)
 	switch(msg->type)
 	{
 		case JOIN:
-			fprintf(stdout, "[%s] %s\n", msg->note->username, msg->note->sentence);
+			fprintf(stdout, "%s %s\n", msg->note->username, msg->note->sentence);
 			break;
 
 		case LEAVE:
+			fprintf(stdout, "You have left the room!\n");
 			break;
 
 		case SHUTDOWN:
+			fprintf(stdout, "[%s] %s\n", msg->note->username, msg->note->sentence);
+			exit(EXIT_SUCCESS);
 			break;
 
 		default:	

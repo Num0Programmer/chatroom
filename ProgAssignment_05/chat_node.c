@@ -39,7 +39,7 @@ void chat_node_list_init(struct chat_node_list* _list)
 	_list->head = NULL;
 }
 
-void destroy_chat_node_list(struct chat_node_list* _list)
+void clear_chat_node_list(struct chat_node_list* _list)
 {
 	struct chat_node* wrk_node = _list->head;
 	struct chat_node* prev_node = wrk_node;
@@ -53,8 +53,6 @@ void destroy_chat_node_list(struct chat_node_list* _list)
 
 		prev_node = wrk_node;
 	}
-
-	free(_list);
 }
 
 void remove_chat_node(struct chat_node_list* _list, unsigned int _ip_addr)

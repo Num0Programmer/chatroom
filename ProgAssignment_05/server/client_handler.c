@@ -1,6 +1,5 @@
 #include "client_handler.h"
 
-
 /* function implementation */
 void* client_handler(void* _handler_args)
 {
@@ -9,9 +8,6 @@ void* client_handler(void* _handler_args)
 
 	// giving client_socket it's own variable
 	int client_socket = *((int*)&ha->sock);
-
-	// unlock mutex
-	//pthread_mutex_unlock(handler_args->mutex);
 
 	// allocate memory for incoming message
 	struct message* rec_msg = (struct message*)malloc(sizeof(struct message));
@@ -93,6 +89,24 @@ void* client_handler(void* _handler_args)
 
 		case SHUTDOWN_ALL:
 			send_msg->type = SHUTDOWN_ALL;
+
+			strcpy(send_msg->note->sentence, "has shutdown the room!");
+
+			// notify room of shutdown
+			send_msg_to_room(ha->client_list, send_msg);
+
+			clear_chat_node_list(ha->client_list);
+			
+			// unlock mutex
+			pthread_mutex_unlock(ha->mutex);
+
+			// exit function
+			if (close(client_socket) == -1)
+			{
+				perror("Error closing client socket");
+				exit(EXIT_FAILURE);
+			}
+			pthread_exit(NULL);	
 			break;
 
 		default:
@@ -103,7 +117,7 @@ void* client_handler(void* _handler_args)
 
 	// forward message to room
 	send_msg_to_room(ha->client_list, send_msg);
-			
+	
 	// unlock mutex
 	pthread_mutex_unlock(ha->mutex);
 
