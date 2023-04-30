@@ -104,7 +104,7 @@ void* handle_conn(void* _sock)
 	switch(msg->type)
 	{
 		case JOIN:
-			fprintf(stdout, "[%s] %s\n", msg->note->username, msg->note->sentence);
+			fprintf(stdout, "%s %s\n", msg->note->username, msg->note->sentence);
 			break;
 
 		case LEAVE:
