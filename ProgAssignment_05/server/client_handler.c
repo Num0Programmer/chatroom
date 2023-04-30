@@ -88,7 +88,7 @@ void* client_handler(void* _handler_args)
 			break;
 
 		case SHUTDOWN_ALL:
-			send_msg->type = SHUTDOWN;
+			send_msg->type = SHUTDOWN_ALL;
 
 			strcpy(send_msg->note->sentence, "has shutdown the room!");
 
