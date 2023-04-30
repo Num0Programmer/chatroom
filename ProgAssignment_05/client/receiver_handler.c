@@ -51,11 +51,6 @@ void* receiver_handler(void* _handler_args)
 	// start receiver loop
 	while (TRUE)
 	{
-		if (!ha->connected)
-		{
-			break;	// client left the chat room
-		}
-
 		pthread_mutex_lock(&mutex);
 
 		// accept client connection
