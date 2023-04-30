@@ -26,7 +26,7 @@
 
 
 /* function prototypes */
-void* receiver_handler(void* rec_port);
+void* receiver_handler(void* _handler_args);
 void* handle_conn(void* _sock);
 
 

@@ -47,6 +47,16 @@ int main(int argc, char** argv)
 		exit(EXIT_FAILURE);
 	}
 
+	if (pthread_create(
+			&receiver_thread, NULL,
+			receiver_handler, (void*)&ha
+		) != 0
+	)
+	{
+		perror("Error failure creating receiver thread");
+		exit(EXIT_FAILURE);
+	}
+
 	// zero out clint_input
 	memset(client_input, 0, MAX_CHARS);
 	// while chatting code is not equal to SHUTDOWN
@@ -78,15 +88,17 @@ int main(int argc, char** argv)
 
 				strcpy(ha->msg->note->sentence, "Join request");
 				ha->msg->note->length = 12;
+		
 				ha->connected = TRUE;
 				break;
 
 			case LEAVE:
-				if (pthread_cancel(receiver_thread) == -1)
-				{
-					perror("Error canceling receiver thread");
-					exit(EXIT_FAILURE);
-				}
+				ha->msg->type = LEAVE;
+				ha->msg->port = ha->port;
+				ha->msg->ip_addr = ip_pton(ha->ip_addr);
+
+				strcpy(ha->msg->note->sentence, "Leave note");
+				ha->msg->note->length = 10;
 				ha->connected = FALSE;
 				break;
 

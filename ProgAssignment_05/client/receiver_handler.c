@@ -6,11 +6,12 @@ pthread_mutex_t mutex;
 
 
 /* function implementation */
-void* receiver_handler(void* receiver_port)
+void* receiver_handler(void* _handler_args)
 {
 	// define networking information
 	int receiver_socket;	// descriptor of reciever's socket
 	struct sockaddr_in receiver_address;	// nameing the reciever's listening socket
+	struct handler_args* ha = (struct handler_args*)_handler_args;
 
 	// initialize mutex
 	pthread_mutex_init(&mutex, NULL);
@@ -26,7 +27,7 @@ void* receiver_handler(void* receiver_port)
 	
 	receiver_address.sin_family = AF_INET;	// define IP family
 	receiver_address.sin_addr.s_addr = htonl(INADDR_ANY);	// accept on any port
-	receiver_address.sin_port = htons(*((int*)receiver_port));	// port to listen on
+	receiver_address.sin_port = htons(*((int*)&ha->port));	// port to listen on
 	
 	if (bind(
 			receiver_socket,
@@ -47,15 +48,14 @@ void* receiver_handler(void* receiver_port)
 		exit(EXIT_FAILURE);
 	}
 
-	/*
-	printf("\n\nReceiver started:\n");
-	printf("IP addres: %u\n", receiver_address.sin_addr.s_addr);
-	printf("Port number: %u\n\n", receiver_address.sin_port);
-	*/
-
 	// start receiver loop
 	while (TRUE)
 	{
+		if (!ha->connected)
+		{
+			break;	// client left the chat room
+		}
+
 		pthread_mutex_lock(&mutex);
 
 		// accept client connection
@@ -83,6 +83,11 @@ void* receiver_handler(void* receiver_port)
 	}
 
 	// exit function
+	if (close(receiver_socket) == -1)
+	{
+		perror("Error closing receiver socket");
+		exit(EXIT_FAILURE);
+	}
 	pthread_mutex_destroy(&mutex);
 	pthread_exit(NULL);	// reports status of conn to chatroom
 }

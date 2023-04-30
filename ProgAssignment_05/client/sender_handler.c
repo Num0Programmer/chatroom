@@ -33,7 +33,11 @@ void* sender_handler(void* _handler_args)
 	pthread_mutex_unlock(ha->mutex);
 
 	// exit function
-	close(sock);
+	if (close(sock) == -1)
+	{
+		perror("Error closing sender socket");
+		exit(EXIT_FAILURE);
+	}
 	pthread_exit(NULL);
 }
 

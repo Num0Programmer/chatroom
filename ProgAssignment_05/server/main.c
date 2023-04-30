@@ -89,6 +89,11 @@ int main (int argc, char** argv)
 		}
 	}
 
+	if (close(server_socket) == -1)
+	{
+		perror("Error closing server socket");
+		exit(EXIT_FAILURE);
+	}
 	pthread_mutex_destroy(&mutex);
 	return EXIT_SUCCESS;
 }
