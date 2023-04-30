@@ -7,7 +7,7 @@ pthread_mutex_t mutex;
 
 int main (int argc, char** argv)
 {
-	int server_socket;	// descriptor of server socket
+	int server_socket;					// descriptor of server socket
 	struct sockaddr_in server_address;	// naming the server's listening socket
 	
 	// list of clients currently in the chatroom
@@ -34,9 +34,9 @@ int main (int argc, char** argv)
 		exit(EXIT_FAILURE);
 	}
 
-	server_address.sin_family = AF_INET;	// define IP family
+	server_address.sin_family = AF_INET;				// define IP family
 	server_address.sin_addr.s_addr = htonl(INADDR_ANY);	// accept client
-	server_address.sin_port = htons(PORT);	// port to listen on
+	server_address.sin_port = htons(PORT);				// port to listen on
 
 	// bind socket to port
 	if (bind(

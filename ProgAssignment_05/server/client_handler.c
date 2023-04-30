@@ -10,6 +10,9 @@ void* client_handler(void* _handler_args)
 	// giving client_socket it's own variable
 	int client_socket = *((int*)&handler_args->sock);
 
+	// unlock mutex
+	//pthread_mutex_unlock(handler_args->mutex);
+
 	// allocate memory for incoming message
 	struct message* rec_msg = (struct message*)malloc(sizeof(struct message));
 	rec_msg->note = (struct note*)malloc(sizeof(struct note));
@@ -36,12 +39,6 @@ void* client_handler(void* _handler_args)
 		rec_msg->note->sentence,
 		rec_msg->note->length
 	);
-
-	// set ambiguous message and note information
-	send_msg->port = rec_msg->port;
-	send_msg->ip_addr = rec_msg->ip_addr;
-	strcpy(send_msg->note->username, rec_msg->note->username);
-	strcpy(send_msg->note->sentence, rec_msg->note->sentence);
 	
 	// switch based on message type
 	switch (rec_msg->type)
@@ -49,12 +46,7 @@ void* client_handler(void* _handler_args)
 		case JOIN:
 			// set message information
 			send_msg->type = JOIN;
-
-			// set note information
-			memset(send_msg->note->sentence, 0, LEN_SENTENCE);
-			strcpy(send_msg->note->sentence, "has joined the room!");
-			send_msg->note->length = 25;	// client always sends same message
-
+			
 			struct chat_node* new_client = (struct chat_node*)malloc(sizeof(struct chat_node));
 			new_client->port = rec_msg->port;
 			new_client->ip_addr = rec_msg->ip_addr;
@@ -66,7 +58,6 @@ void* client_handler(void* _handler_args)
 				"\t\tAdded client at %s on port %d to the list\n",
 				ip_ntop(new_client->ip_addr), new_client->port
 			);
-			
 			// unlock mutex
 			pthread_mutex_unlock(handler_args->mutex);
 			break;
@@ -87,7 +78,17 @@ void* client_handler(void* _handler_args)
 			send_msg->type = NOTE;
 			break;
 	}
+	
+	// set connection information
+	send_msg->port = rec_msg->port;
+	send_msg->ip_addr = rec_msg->ip_addr;
 
+	// set note information
+	strcpy(send_msg->note->username, rec_msg->note->username);
+	strcpy(send_msg->note->sentence, rec_msg->note->sentence);
+	send_msg->note->length = strlen(send_msg->note->username);
+
+	// forward message to room
 	send_msg_to_room(handler_args->client_list, send_msg);
 
 	// exit function
@@ -98,16 +99,16 @@ void* client_handler(void* _handler_args)
 
 void send_msg_to_room(struct chat_node_list* _list, struct message* _msg)
 {
-	printf("\n\t\tsend message to room called here!\n");
+	//printf("\n\t\tsend message to room called here!\n");
 	struct chat_node* wrk_node = _list->head;
 
 	while (wrk_node != NULL)
 	{
-		if (_msg->ip_addr != wrk_node->ip_addr)
+		if(_msg->ip_addr != wrk_node->ip_addr)
 		{
 			int sock;
 			struct sockaddr_in send_addr;
-
+			
 			// create socket for sending
 			if ((sock = socket(AF_INET, SOCK_STREAM, 0)) == -1)
 			{
@@ -129,13 +130,11 @@ void send_msg_to_room(struct chat_node_list* _list, struct message* _msg)
 				perror("Error connection unsuccessful");
 				exit(EXIT_FAILURE);
 			}
-
+		
 			write_message(_msg, sock);
 			printf("\nWrote message to %s\n", ip_ntop(wrk_node->ip_addr));
-
 			close(sock);
 		}
-
 		wrk_node = wrk_node->next_node;
 	}
 }

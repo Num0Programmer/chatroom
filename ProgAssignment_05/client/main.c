@@ -40,14 +40,19 @@ int main(int argc, char** argv)
 	memcpy(ha->props_str, props_name, strlen(props_name) + 1);
 
 	load_props(ha);
+	if (pthread_create(&receiver_thread, NULL, receiver_handler, 
+				                            (void*)&ha->port) != 0)
+	{
+		perror("Error failure creating receiver thread");
+		exit(EXIT_FAILURE);
+	}
 
 	// zero out clint_input
 	memset(client_input, 0, MAX_CHARS);
 	// while chatting code is not equal to SHUTDOWN
 	while (msg_type != SHUTDOWN || msg_type != SHUTDOWN_ALL)
 	{
-		// reset variable loop vars
-		ha->msg->type = NOTE;
+		// zero out clint_input
 		memset(client_input, 0, MAX_CHARS);
 		memset(ha->msg->note->sentence, 0, LEN_SENTENCE);
 
@@ -73,17 +78,6 @@ int main(int argc, char** argv)
 
 				strcpy(ha->msg->note->sentence, "Join request");
 				ha->msg->note->length = 12;
-
-				if (pthread_create(
-						&receiver_thread, NULL,
-						receiver_handler, (void*)&ha->port
-					) != 0
-				)
-				{
-					perror("Error failure creating receiver thread");
-					exit(EXIT_FAILURE);
-				}
-
 				ha->connected = TRUE;
 				break;
 
@@ -104,8 +98,8 @@ int main(int argc, char** argv)
 
 			default:	// assume NOTE
 				client_input[strlen(client_input) - 1] = '\0';
+				ha->msg->type = NOTE;
 				strcpy(ha->msg->note->sentence, client_input);
-				ha->msg->note->length = strlen(ha->msg->note->sentence);
 				break;
 		}
 
@@ -117,10 +111,10 @@ int main(int argc, char** argv)
 			exit(EXIT_FAILURE);
 		}
 		
-		// check detach sender thread
+		// setting back to join; can't figure out why detach no worky
 		if (pthread_join(send_thread, NULL) != 0)
 		{
-			perror("Error detaching thread");
+			perror("Error joining thread");
 			exit(EXIT_FAILURE);
 		}
 
@@ -140,7 +134,7 @@ int command_read(char* input_string)
 	char *command_string = NULL;
 	char *second_string= NULL;
 
-	int command_num = NOTE;
+	int command_num;
 
 	cpy_in_str = malloc(sizeof(char) * (strlen(input_string) + 1));
 
@@ -189,6 +183,11 @@ int command_read(char* input_string)
 				command_num = SHUTDOWN_ALL;
 			}
 		}
+	}
+	// otherwise assume note
+	else
+	{
+		command_num = NOTE;
 	}
 	
 	// return the number associated with the enum command
