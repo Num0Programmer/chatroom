@@ -42,7 +42,7 @@ int main(int argc, char** argv)
 	load_props(ha);
 	if (pthread_create(
 			&receiver_thread, NULL,
-			receiver_handler, (void*)&ha
+			receiver_handler, (void*)&ha->port
 		) != 0
 	)
 	{

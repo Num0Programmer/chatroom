@@ -6,12 +6,11 @@ pthread_mutex_t mutex;
 
 
 /* function implementation */
-void* receiver_handler(void* _handler_args)
+void* receiver_handler(void* receiver_port)
 {
 	// define networking information
 	int receiver_socket;	// descriptor of reciever's socket
 	struct sockaddr_in receiver_address;	// nameing the reciever's listening socket
-	struct handler_args* ha = (struct handler_args*)_handler_args;
 
 	// initialize mutex
 	pthread_mutex_init(&mutex, NULL);
@@ -27,7 +26,7 @@ void* receiver_handler(void* _handler_args)
 	
 	receiver_address.sin_family = AF_INET;	// define IP family
 	receiver_address.sin_addr.s_addr = htonl(INADDR_ANY);	// accept on any port
-	receiver_address.sin_port = htons(*((int*)&ha->port));	// port to listen on
+	receiver_address.sin_port = htons(*((int*)receiver_port));	// port to listen on
 	
 	if (bind(
 			receiver_socket,
