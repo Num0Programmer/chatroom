@@ -23,12 +23,6 @@ void* client_handler(void* _handler_args)
 	// read a message from the socket
 	read_message(rec_msg, client_socket);
 
-	if (rec_msg->type == NOTE)
-	{
-		// unlock mutex
-		pthread_mutex_unlock(ha->mutex);
-	}
-
 	printf(
 		"Received message from %s on port %d\n",
 		ip_ntop(rec_msg->ip_addr), rec_msg->port
@@ -69,8 +63,6 @@ void* client_handler(void* _handler_args)
 				ip_ntop(new_client->ip_addr), new_client->port
 			);
 			printf("\t\tRoom size: %zu\n", ha->client_list->size);
-			// unlock mutex
-			pthread_mutex_unlock(ha->mutex);
 			break;
 
 		case LEAVE:
@@ -108,17 +100,12 @@ void* client_handler(void* _handler_args)
 			strcpy(send_msg->note->sentence, rec_msg->note->sentence);
 			break;
 	}
-	// set connection information
-	send_msg->port = rec_msg->port;
-	send_msg->ip_addr = rec_msg->ip_addr;
-
-	// set note information
-	strcpy(send_msg->note->username, rec_msg->note->username);
-	strcpy(send_msg->note->sentence, rec_msg->note->sentence);
-	send_msg->note->length = strlen(send_msg->note->username);
 
 	// forward message to room
 	send_msg_to_room(ha->client_list, send_msg);
+			
+	// unlock mutex
+	pthread_mutex_unlock(ha->mutex);
 
 	// exit function
 	if (close(client_socket) == -1)
@@ -156,6 +143,11 @@ void send_msg_to_room(struct chat_node_list* _list, struct message* _msg)
 			// set the port number
 			send_addr.sin_port = htons(wrk_node->port);
 
+			printf(
+				"Connecting %s on port %d...\n",
+				ip_ntop(wrk_node->ip_addr),
+				wrk_node->port
+			);
 			// connect to client's socket
 			if (connect(sock, (struct sockaddr*)&send_addr, sizeof(send_addr)) == -1)
 			{
