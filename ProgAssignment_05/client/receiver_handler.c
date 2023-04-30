@@ -114,10 +114,10 @@ void* handle_conn(void* _sock)
 			break;
 
 		case LEAVE:
-			fprintf(stdout, "You have left the room!\n");
+			fprintf(stdout, "%s %s\n", msg->note->username, msg->note->sentence);
 			break;
 
-		case SHUTDOWN:
+		case SHUTDOWN_ALL:
 			fprintf(stdout, "[%s] %s\n", msg->note->username, msg->note->sentence);
 			exit(EXIT_SUCCESS);
 			break;
