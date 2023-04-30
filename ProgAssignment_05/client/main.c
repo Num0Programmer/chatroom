@@ -53,7 +53,7 @@ int main(int argc, char** argv)
 	// zero out clint_input
 	memset(client_input, 0, MAX_CHARS);
 	// while chatting code is not equal to SHUTDOWN
-	while (msg_type != SHUTDOWN || msg_type != SHUTDOWN_ALL)
+	while (msg_type != SHUTDOWN && msg_type != SHUTDOWN_ALL)
 	{
 		// zero out clint_input
 		memset(client_input, 0, MAX_CHARS);
@@ -74,15 +74,25 @@ int main(int argc, char** argv)
 		switch(msg_type)
 		{
 			case JOIN:
-				join_room(ha, client_input);
-				ha->msg->type = JOIN;
-				ha->msg->port = ha->port;
-				ha->msg->ip_addr = ip_pton(ha->ip_addr);
+				if (ha->connected)
+				{
+					printf("%sYou're already in the chat!%s\n",
+						  AC_GREEN, AC_NORMAL);
+					continue;
+				}
 
-				strcpy(ha->msg->note->sentence, "Join request");
-				ha->msg->note->length = 12;
+				else
+				{
+					join_room(ha, client_input);
+					ha->msg->type = JOIN;
+					ha->msg->port = ha->port;
+					ha->msg->ip_addr = ip_pton(ha->ip_addr);
+					
+					strcpy(ha->msg->note->sentence, "Join request");
+					ha->msg->note->length = 12;
 		
-				ha->connected = TRUE;
+					ha->connected = TRUE;
+				}
 				break;
 
 			case LEAVE:
@@ -123,6 +133,9 @@ int main(int argc, char** argv)
 				break;
 		}
 
+		// set msg_type for next iteration check
+		msg_type = ha->msg->type;
+
 		// start sender thread - hand message to send
 		pthread_t send_thread;
 		if (pthread_create(&send_thread, NULL, sender_handler, (void*)ha) != 0)
@@ -153,7 +166,7 @@ int command_read(char* input_string)
 	char *cpy_in_str = NULL;
 	char *cpy_in_str2 = NULL;
 	char *command_string = NULL;
-	char *second_string= NULL;
+	char *tok_cpy = NULL;
 
 	int command_num;
 	cpy_in_str2 = malloc(sizeof(char) * (strlen(input_string) + 1));
@@ -193,16 +206,13 @@ int command_read(char* input_string)
 	{
 		command_num = SHUTDOWN;
 
-		// check to see if the next token is "all"
-		second_string = strtok_r(input_string, " ", &input_string);
+		// token other copy for comparison
+		tok_cpy = strtok_r(cpy_in_str2, " ", &cpy_in_str2);
 
-		// check that the second_string isn't null ( this is to avoid comparing test_string with
-		// NULL and giving us a seg fault)
-		if (strlen(cpy_in_str2) > strlen(input_string))
+		// check for original input string length greater than token copy
+		if (strlen(input_string) > strlen(tok_cpy))
 		{
-
 			command_num = SHUTDOWN_ALL;
-
 		}
 	}
 	// otherwise assume note

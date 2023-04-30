@@ -39,9 +39,9 @@ void chat_node_list_init(struct chat_node_list* _list)
 	_list->head = NULL;
 }
 
-void clear_chat_node_list(struct chat_node_list* _list)
+void clear_chat_node_list(struct chat_node_list** _list)
 {
-	struct chat_node* wrk_node = _list->head;
+	struct chat_node* wrk_node = (*_list)->head;
 	struct chat_node* prev_node = wrk_node;
 
 	// loop until previous node is NULL
@@ -55,17 +55,17 @@ void clear_chat_node_list(struct chat_node_list* _list)
 	}
 }
 
-void remove_chat_node(struct chat_node_list* _list, unsigned int _ip_addr)
+void remove_chat_node(struct chat_node_list** _list, unsigned int _ip_addr)
 {
-	struct chat_node* remove_node = _list->head;
+	struct chat_node* remove_node = (*_list)->head;
 
-	if (_list->head != NULL && remove_node->ip_addr == _ip_addr)
+	if ((*_list)->head != NULL && remove_node->ip_addr == _ip_addr)
 	{
-		_list->head = _list->head->next_node;
+		(*_list)->head = (*_list)->head->next_node;
 		free(remove_node);
-		_list->size -= 1;
+		(*_list)->size -= 1;
 	}
-	else if (_list->head != NULL)
+	else if ((*_list)->head != NULL)
 	{
 		// initialize working node with head node
 		struct chat_node* wrk_node = remove_node;
@@ -87,7 +87,7 @@ void remove_chat_node(struct chat_node_list* _list, unsigned int _ip_addr)
 		{
 			wrk_node->next_node = wrk_node->next_node->next_node;
 			free(remove_node);
-			_list->size -= 1;
+			(*_list)->size -= 1;
 		}
 	}
 }

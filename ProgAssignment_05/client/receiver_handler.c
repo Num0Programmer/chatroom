@@ -110,20 +110,27 @@ void* handle_conn(void* _sock)
 	switch(msg->type)
 	{
 		case JOIN:
-			fprintf(stdout, "%s %s\n", msg->note->username, msg->note->sentence);
+			fprintf(stdout, "%s%s %s%s%s\n", AC_RED, msg->note->username, 
+									 AC_GREEN, msg->note->sentence,
+									 AC_NORMAL);
 			break;
 
 		case LEAVE:
-			fprintf(stdout, "%s %s\n", msg->note->username, msg->note->sentence);
+			fprintf(stdout, "%s%s %s%s%s\n", AC_RED, msg->note->username, 
+									 AC_GREEN, msg->note->sentence,
+									 AC_NORMAL);
 			break;
 
 		case SHUTDOWN_ALL:
-			fprintf(stdout, "[%s] %s\n", msg->note->username, msg->note->sentence);
+			fprintf(stdout, "%s[%s] %s%s%s\n", AC_RED, msg->note->username, 
+									 AC_GREEN, msg->note->sentence,
+									 AC_NORMAL);
 			exit(EXIT_SUCCESS);
 			break;
 
 		default:	
-			fprintf(stdout, "[%s] %s\n", msg->note->username, msg->note->sentence);
+			fprintf(stdout, "%s[%s] %s%s\n", AC_RED, msg->note->username, 
+									   AC_NORMAL, msg->note->sentence);
 			break;
 	}
 

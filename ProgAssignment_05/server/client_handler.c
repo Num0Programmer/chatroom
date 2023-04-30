@@ -66,7 +66,7 @@ void* client_handler(void* _handler_args)
 
 			strcpy(send_msg->note->sentence, "has left the room!");
 
-			remove_chat_node(ha->client_list, rec_msg->ip_addr);
+			remove_chat_node(&ha->client_list, rec_msg->ip_addr);
 			printf(
 				"\t\tRemoved client at %s on port %d from list\n",
 				ip_ntop(rec_msg->ip_addr), rec_msg->port
@@ -79,7 +79,7 @@ void* client_handler(void* _handler_args)
 			
 			strcpy(send_msg->note->sentence, "has left the room!");
 
-			remove_chat_node(ha->client_list, rec_msg->ip_addr);
+			remove_chat_node(&ha->client_list, rec_msg->ip_addr);
 			printf(
 				"\t\tRemoved client at %s on port %d from list\n",
 				ip_ntop(rec_msg->ip_addr), rec_msg->port
@@ -95,7 +95,7 @@ void* client_handler(void* _handler_args)
 			// notify room of shutdown
 			send_msg_to_room(ha->client_list, send_msg);
 
-			clear_chat_node_list(ha->client_list);
+			clear_chat_node_list(&ha->client_list);
 			
 			// unlock mutex
 			pthread_mutex_unlock(ha->mutex);

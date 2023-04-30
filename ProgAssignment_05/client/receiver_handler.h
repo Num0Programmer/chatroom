@@ -33,8 +33,13 @@ void* handle_conn(void* _sock);
 /* preprocessor definitions */
 #define FALSE 0
 #define TRUE !FALSE
-
 #define NUM_CONNECTIONS 20
+
+/* text colors */
+#define AC_RED "\033[1;31m"
+#define AC_GREEN "\033[1;32m"
+#define AC_NORMAL "\033[1;0m"
+
 
 
 #endif /* RECEIVER_HANDLER_H */

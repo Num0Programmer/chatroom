@@ -40,3 +40,8 @@ void print_join_help();
 #define FALSE 0
 #define TRUE !FALSE
 
+/* text colors */
+#define AC_RED "\033[1;31m"
+#define AC_GREEN "\033[1;32m"
+#define AC_NORMAL "\033[1;0m"
+
