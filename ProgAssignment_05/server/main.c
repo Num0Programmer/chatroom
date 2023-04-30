@@ -59,8 +59,8 @@ int main (int argc, char** argv)
 
 	// indicate server is about to enter server loop
 	printf("Server started:\n");
-	printf("IP Address: %s\n", SERVER_ADDR);
-	printf("Port number: %d\n", PORT);
+	printf("IP Address: %u\n", server_address.sin_addr.s_addr);
+	printf("Port number: %u\n", server_address.sin_port);
 
 	// server loop
 	while (TRUE)

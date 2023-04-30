@@ -6,34 +6,32 @@ pthread_mutex_t mutex;
 
 
 /* function implementation */
-void* receiver_handler(void* rec_port)
+void* receiver_handler(void* receiver_port)
 {
-	printf("\treceiver handler called here!\n");
 	// define networking information
-	int rec_socket;	// descriptor of reciever's socket
-	struct sockaddr_in rec_address;	// nameing the reciever's listening socket
+	int receiver_socket;	// descriptor of reciever's socket
+	struct sockaddr_in receiver_address;	// nameing the reciever's listening socket
 
 	// initialize mutex
 	pthread_mutex_init(&mutex, NULL);
 
 	signal(SIGPIPE, SIG_IGN);	// sent on client disconnects
 	
-	if ((rec_socket = socket(AF_INET, SOCK_STREAM, 0)) == -1)
+	if ((receiver_socket = socket(AF_INET, SOCK_STREAM, 0)) == -1)
 	{
 		// report socket creation error
 		perror("Error creating socket");
 		exit(EXIT_FAILURE);
 	}
 	
-	rec_address.sin_family = AF_INET;	// define IP family
-	// accept server connection
-	rec_address.sin_addr.s_addr = htonl(INADDR_ANY);
-	rec_address.sin_port = htons(*((int*)rec_port));	// port to listen on
+	receiver_address.sin_family = AF_INET;	// define IP family
+	receiver_address.sin_addr.s_addr = htonl(INADDR_ANY);	// accept on any port
+	receiver_address.sin_port = htons(*((int*)receiver_port));	// port to listen on
 	
 	if (bind(
-			rec_socket,
-			(struct sockaddr*)&rec_address,
-			sizeof(rec_address)
+			receiver_socket,
+			(struct sockaddr*)&receiver_address,
+			sizeof(receiver_address)
 		) != 0
 	)
 	{
@@ -42,26 +40,26 @@ void* receiver_handler(void* rec_port)
 		exit(EXIT_FAILURE);
 	}
 
-	if (listen(rec_socket, NUM_CONNECTIONS) != 0)
+	if (listen(receiver_socket, NUM_CONNECTIONS) != 0)
 	{
 		// report listening error
 		perror("Error listening on socket");
 		exit(EXIT_FAILURE);
 	}
 
-	// indicate server is about to enter server loop
-	printf("\tReceiver started:\n");
-	printf("\tIP Address: %s\n", HOME_ADDR);
-	printf("\tPort number: %d\n", *((int*)rec_port));
+	/*
+	printf("\n\nReceiver started:\n");
+	printf("IP addres: %u\n", receiver_address.sin_addr.s_addr);
+	printf("Port number: %u\n\n", receiver_address.sin_port);
+	*/
 
 	// start receiver loop
 	while (TRUE)
 	{
-		fprintf(stdout, "\tReceiver loop running...\n");
 		pthread_mutex_lock(&mutex);
 
 		// accept client connection
-		int conn_socket = accept(rec_socket, NULL, NULL);
+		int conn_socket = accept(receiver_socket, NULL, NULL);
 
 		// start deticated client thread
 		pthread_t thread;
@@ -91,44 +89,34 @@ void* receiver_handler(void* rec_port)
 
 void* handle_conn(void* _sock)
 {
-	printf("\t\thandle conn called here!\n");
 	// copy conn socket
 	int conn_socket = *((int*)_sock);
+	
+	// unlock mutex
+	pthread_mutex_unlock(&mutex);
 
 	// default message structure
 	struct message* msg = (struct message*)malloc(sizeof(struct message));
 	msg->note = (struct note*)malloc(sizeof(struct note));
 
-	// unlock mutex
-	pthread_mutex_unlock(&mutex);
-
-	printf("\t\treading message from socket...\n");
 	read_message(msg, conn_socket);
-	printf("\t\tsuccessfully read message from the socket!\n");
 	
 	switch(msg->type)
 	{
 		case JOIN:
-			printf("\t\tmessage was a JOIN message!\n");
+			fprintf(stdout, "[%s] %s\n", msg->note->username, msg->note->sentence);
 			break;
 
 		case LEAVE:
-			// print leaving log
-			printf("\t\tmessage was a LEAVE message!\n");
 			break;
 
 		case SHUTDOWN:
-			// print shutdown log
-			printf("\t\tmessage was a SHUTDOWN message!\n");
 			break;
 
-		// assume NOTE
-		default:
-			// print message
-			printf("\t\tmessage was a NOTE message!\n");
+		default:	
+			fprintf(stdout, "[%s] %s\n", msg->note->username, msg->note->sentence);
 			break;
 	}
-
 
 	// exit function
 	if (close(conn_socket) != 0)

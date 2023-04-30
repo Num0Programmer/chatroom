@@ -28,13 +28,14 @@
 int command_read(char* input_string);
 void* join_room(void* _handler_args, char* input_string);
 void load_props(struct handler_args* _handler_args);
+void print_join_help();
 
 
 /* preprocessor definitions */
 #define DEFAULT_IP "127.0.0.1"
 #define DEFAULT_PORT 23657
 
-#define MAX_CHARS 64
+#define MAX_CHARS 128
 
 #define FALSE 0
 #define TRUE !FALSE
