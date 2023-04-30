@@ -69,7 +69,7 @@ int main(int argc, char** argv)
 			print_join_help();
 			continue;
 		}
-
+		
 		// switch according to msg_type
 		switch(msg_type)
 		{
@@ -151,15 +151,18 @@ int main(int argc, char** argv)
 int command_read(char* input_string)
 {
 	char *cpy_in_str = NULL;
+	char *cpy_in_str2 = NULL;
 	char *command_string = NULL;
 	char *second_string= NULL;
 
 	int command_num;
-
+	cpy_in_str2 = malloc(sizeof(char) * (strlen(input_string) + 1));
 	cpy_in_str = malloc(sizeof(char) * (strlen(input_string) + 1));
 
 	// copy console_input in order to not delete anything
     strcpy(cpy_in_str, input_string);
+	strcpy(cpy_in_str2, input_string);
+
 
 	// captures the first string which should be a command
 	command_string = strtok_r(cpy_in_str, " ", &cpy_in_str);
@@ -195,13 +198,11 @@ int command_read(char* input_string)
 
 		// check that the second_string isn't null ( this is to avoid comparing test_string with
 		// NULL and giving us a seg fault)
-		if (second_string != NULL)
+		if (strlen(cpy_in_str2) > strlen(input_string))
 		{
-			// if it is, change the command string to SHUTDOWN ALL
-			if (strcmp(second_string, "ALL\0") == 0)
-			{
-				command_num = SHUTDOWN_ALL;
-			}
+
+			command_num = SHUTDOWN_ALL;
+
 		}
 	}
 	// otherwise assume note
